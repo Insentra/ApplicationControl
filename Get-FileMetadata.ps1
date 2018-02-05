@@ -3,7 +3,8 @@
         Get file metadata from files in a target folder.
     
     .DESCRIPTION
-
+        Retreives file metadata from files in a target path, or file paths, to display information on the target files.
+        Useful for understanding application files and identifying metadata stored in them. Enables the administrator to view metadata for application control scenarios.
 
     .NOTES
         Name: Get-FileMetadata.ps1
@@ -26,9 +27,11 @@
         Scans the folder specified in the Path variable and returns the metadata for each file.
 #>
 Function Get-FileMetadata {
-    [CmdletBinding(SupportsShouldProcess = $False, ConfirmImpact = "Low", DefaultParameterSetName='Base')]
+    [CmdletBinding(SupportsShouldProcess=$False)]
     Param (
-        [Parameter(ParameterSetName='Base', Mandatory=$False, ValueFromPipeline=$True, HelpMessage='Specify a target path, paths or a list of file paths which to scan for metadata.')]
+        [Parameter(Mandatory=$False, ValueFromPipeline=$True, ValueFromPipelineByPropertyName=$True, `
+        HelpMessage='Specify a target path, paths or a list of files to scan for metadata.')]
+        [Alias('FullName','PSPath')]
         [string[]]$Path = ".\"
     )
 
