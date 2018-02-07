@@ -15,7 +15,7 @@ Function Get-FileMetadata {
         .LINK
             http://stealthpuppy.com
 
-        .OUTPUT
+        .OUTPUTS
             [System.Array]
 
         .PARAMETER Path

@@ -16,7 +16,7 @@ Function Get-DigitalSignatures {
         .LINK
             http://stealthpuppy.com
 
-        .OUTPUT
+        .OUTPUTS
             [System.Array]
 
         .PARAMETER Path
@@ -72,6 +72,7 @@ Function Get-DigitalSignatures {
     Begin {
         # Measure time taken to gather data
         $StopWatch = [system.diagnostics.stopwatch]::StartNew()
+
         Function Export-P7bFile {
             Param (
                 [string]$File,
