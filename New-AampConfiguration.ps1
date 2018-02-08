@@ -1,22 +1,33 @@
-$Configuration = New-Object -ComObject AM.Configuration.5
-$ConfigurationHelper = New-Object -ComObject AM.ConfigurationHelper.1
+# Create the configuration
+$Configuration = $Null
+$Configuration = New-Object -ComObject 'AM.Configuration.5'
 
+# Create the configuration helper
+$ConfigurationHelper = $Null
+$ConfigurationHelper = New-Object -ComObject 'AM.ConfigurationHelper.1'
+
+# Create default configuration
 $ConfigurationXml = $Null
 $ConfigurationXml = $ConfigurationHelper.DefaultConfiguration
 $Configuration.ParseXML($ConfigurationXml)
 
-$Path = "C:\TrustedFolder\SlackSetup.exe"
-
+# Add a file to the list of accessible files.
+$AccessibleFile = $Null
 $AccessibleFile = $Configuration.CreateInstanceFromClassName("AM.File")
-$AccessibleFile.Path = $Path
-$AccessibleFile.Commandline = $Path
+$AccessibleFile.Path = "C:\Users\aaron\Downloads\Setup-12.21.1.exe"
+<# $AccessibleFile.Description = "Microsoft file"
+$AccessibleFile.Metadata.CompanyName = "Microsoft"
+$AccessibleFile.Metadata.CompanyNameEnabled = $True
+$AccessibleFile.Metadata.ProductName = "Microsoft"
+$AccessibleFile.Metadata.ProductNameEnabled = $True
+$AccessibleFile.Metadata.FileDescription = "Microsoft"
+$AccessibleFile.Metadata.FileDescriptionEnabled = $True #>
 
-$ConfigurationHelper.ReadNumCertificatesFromFile($Path)
-$ConfigurationHelper.ReadCertificateFromFile($Path, 0)
-
-$Configuration.GroupRules.Item("Everyone").AccessibleFiles.Add($AccessibleFile.Xml)
-
+# $Configuration.GroupRules.Item("Everyone").AccessibleFiles.Add($AccessibleFile.Xml())
+$Configuration.GroupRules['Everyone'].AccessibleFiles.Add($AccessibleFile.Xml())
 $ConfigurationHelper.SaveLocalConfiguration("C:\Temp\Configuration.aamp", $ConfigurationXml)
+
+
 
 
 <#
