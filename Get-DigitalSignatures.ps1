@@ -22,6 +22,9 @@ Function Get-DigitalSignatures {
         .PARAMETER Path
             A target path in which to scan files for digital signatures.
 
+        .PARAMETER Include
+            Gets only the specified items.
+
         .PARAMETER OutPath
             A target path to export certificates in P7B file format to. Each file will be named for the certificte thumbprint.
 
@@ -57,6 +60,11 @@ Function Get-DigitalSignatures {
         # [ValidateScript({ If (Test-Path $_ -PathType 'Container') { $True } Else { Throw "Cannot find path $_" } })]
         [Alias('FullName','PSPath')]
         [string[]]$Path = ".\",
+
+        [Parameter(Mandatory=$False, ValueFromPipeline=$False, `
+        HelpMessage='Gets only the specified items.')]
+        [Alias('Filter')]
+        [string[]]$Include = @('*.exe', '*.dll'),
 
         [Parameter(ParameterSetName='Base', Mandatory=$False, HelpMessage='Output certificates to files in a specific folder.')]
         [ValidateScript({ If (Test-Path $_ -PathType 'Container') { $True } Else { Throw "Cannot find output path $_" } })]
@@ -95,7 +103,7 @@ Function Get-DigitalSignatures {
 
                 # Target is a folder, so trawl the folder for .exe and .dll files in the target and sub-folders
                 Write-Verbose "Scanning files in folder: $Path"
-                $items = Get-ChildItem -Path $Path -Recurse -Include '*.exe', '*.dll'
+                $items = Get-ChildItem -Path $Path -Recurse -Include $Include
             } Else {
 
                 # Target is a file, so just get metadata for the file
@@ -110,8 +118,7 @@ Function Get-DigitalSignatures {
                                 @{Name = "Subject"; Expression = {$_.SignerCertificate.Subject}}, `
                                 @{Name = "Expiry"; Expression = {$_.SignerCertificate.NotAfter}}, `
                                 Status, `
-                                Path | `
-                        Sort-Object -Property Thumbprint
+                                Path
 
         } Else {
                 Write-Error "Path does not exist: $Path"
@@ -141,6 +148,6 @@ Function Get-DigitalSignatures {
         # Return output
         $StopWatch.Stop()
         Write-Verbose "Digital signature trawling complete. Script took $($StopWatch.Elapsed.TotalMilliseconds) ms to complete."
-        Return $Signatures
+        Return $Signatures | Sort-Object -Property Thumbprint
     }
 }

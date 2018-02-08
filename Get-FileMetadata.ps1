@@ -21,6 +21,9 @@ Function Get-FileMetadata {
         .PARAMETER Path
             A target path in which to scan files for metadata.
 
+        .PARAMETER Include
+            Gets only the specified items.
+
         .EXAMPLE
             .\Get-FileMetadata.ps1 -Path "C:\Users\aaron\AppData\Local\GitHubDesktop"
 
@@ -31,9 +34,13 @@ Function Get-FileMetadata {
     Param (
         [Parameter(Mandatory=$False, ValueFromPipeline=$True, ValueFromPipelineByPropertyName=$True, `
         HelpMessage='Specify a target path, paths or a list of files to scan for metadata.')]
-        # [ValidateScript({ If ((Get-Item -Path $_).PSProvider.Name -ne 'FileSystem') { $True } Else { Throw "$_ is not a file system path." } })]
         [Alias('FullName','PSPath')]
-        [string[]]$Path = ".\"
+        [string[]]$Path = ".\",
+
+        [Parameter(Mandatory=$False, ValueFromPipeline=$False, `
+        HelpMessage='Gets only the specified items.')]
+        [Alias('Filter')]
+        [string[]]$Include = @('*.exe', '*.dll')
     )
 
     Begin {
@@ -52,7 +59,7 @@ Function Get-FileMetadata {
 
                 # Target is a folder, so trawl the folder for .exe and .dll files in the target and sub-folders
                 Write-Verbose "Getting metadata for files in folder: $Path"
-                $items = Get-ChildItem -Path $Path -Recurse -Include '*.exe', '*.dll'
+                $items = Get-ChildItem -Path $Path -Recurse -Include $Include
             } Else {
 
                 # Target is a file, so just get metadata for the file
@@ -66,8 +73,7 @@ Function Get-FileMetadata {
                 @{Name = "Product"; Expression = {$_.VersionInfo.ProductName}}, `
                 @{Name = "Company"; Expression = {$_.VersionInfo.CompanyName}}, `
                 @{Name = "FileVersion"; Expression = {$_.VersionInfo.FileVersion}}, `
-                @{Name = "ProductVersion"; Expression = {$_.VersionInfo.ProductVersion}} | `
-                Sort-Object -Property Path
+                @{Name = "ProductVersion"; Expression = {$_.VersionInfo.ProductVersion}}
 
         } Else {
                 Write-Error "Path does not exist: $Path"
@@ -78,6 +84,6 @@ Function Get-FileMetadata {
         # Return the array of file paths and metadata
         $StopWatch.Stop()
         Write-Verbose "Metadata trawling complete. Script took $($StopWatch.Elapsed.TotalMilliseconds) ms to complete."
-        Return $Files
+        Return $Files | Sort-Object -Property Path
     }
 }
