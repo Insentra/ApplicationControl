@@ -53,27 +53,26 @@ Function Get-DigitalSignatures {
             Description:
             Scans the folder specified in the Path variable and returns the digital signatures for only the first file with a unique certificate.
     #>
-    [CmdletBinding(SupportsShouldProcess=$False, DefaultParameterSetName='Base')]
+    [CmdletBinding(SupportsShouldProcess = $False, DefaultParameterSetName = 'Base')]
     Param (
-        [Parameter(ParameterSetName='Base', Mandatory=$False, ValueFromPipeline=$True, ValueFromPipelineByPropertyName=$True, `
-        HelpMessage='Specify a target path in which to scan files for digital signatures.')]
-        # [ValidateScript({ If (Test-Path $_ -PathType 'Container') { $True } Else { Throw "Cannot find path $_" } })]
-        [Alias('FullName','PSPath')]
-        [string[]]$Path = ".\",
+        [Parameter(ParameterSetName = 'Base', Mandatory = $False, Position = 0, ValueFromPipeline = $True, ValueFromPipelineByPropertyName = $True, `
+                HelpMessage = 'Specify a target path in which to scan files for digital signatures.')]
+        [Alias('FullName', 'PSPath')]
+        [string[]]$Path,
 
-        [Parameter(Mandatory=$False, ValueFromPipeline=$False, `
-        HelpMessage='Gets only the specified items.')]
+        [Parameter(Mandatory = $False, Position = 1, ValueFromPipeline = $False, `
+                HelpMessage = 'Gets only the specified items.')]
         [Alias('Filter')]
         [string[]]$Include = @('*.exe', '*.dll'),
 
-        [Parameter(ParameterSetName='Base', Mandatory=$False, HelpMessage='Output certificates to files in a specific folder.')]
-        [ValidateScript({ If (Test-Path $_ -PathType 'Container') { $True } Else { Throw "Cannot find output path $_" } })]
+        [Parameter(ParameterSetName = 'Base', Mandatory = $False, HelpMessage = 'Output certificates to files in a specific folder.')]
+        [ValidateScript( { If (Test-Path $_ -PathType 'Container') { $True } Else { Throw "Cannot find output path $_" } })]
         [string]$OutPath,
 
-        [Parameter(ParameterSetName='Base', Mandatory=$False, HelpMessage='Specify the records to return - all records, or unique thumbprints.')]
+        [Parameter(ParameterSetName = 'Base', Mandatory = $False)]
         [switch]$Unique,
 
-        [Parameter(ParameterSetName='Base', Mandatory=$False, HelpMessage='Enable output to a Grid View.')]
+        [Parameter(ParameterSetName = 'Base', Mandatory = $False)]
         [switch]$Gridview
     )
 
@@ -104,7 +103,8 @@ Function Get-DigitalSignatures {
                 # Target is a folder, so trawl the folder for .exe and .dll files in the target and sub-folders
                 Write-Verbose "Scanning files in folder: $Path"
                 $items = Get-ChildItem -Path $Path -Recurse -Include $Include
-            } Else {
+            }
+            Else {
 
                 # Target is a file, so just get metadata for the file
                 Write-Verbose "Scanning file: $Path"
@@ -114,14 +114,15 @@ Function Get-DigitalSignatures {
             # Get Exe and Dll files from the target path (inc. subfolders), find signatures and return certain properties in a grid view
             Write-Verbose "Getting digital signatures for: $Path"
             $Signatures += $items | Get-AuthenticodeSignature | `
-                        Select-Object @{Name = "Thumbprint"; Expression = {$_.SignerCertificate.Thumbprint}}, `
-                                @{Name = "Subject"; Expression = {$_.SignerCertificate.Subject}}, `
-                                @{Name = "Expiry"; Expression = {$_.SignerCertificate.NotAfter}}, `
-                                Status, `
-                                Path
+                Select-Object @{Name = "Thumbprint"; Expression = {$_.SignerCertificate.Thumbprint}}, `
+            @{Name = "Subject"; Expression = {$_.SignerCertificate.Subject}}, `
+            @{Name = "Expiry"; Expression = {$_.SignerCertificate.NotAfter}}, `
+                Status, `
+                Path
 
-        } Else {
-                Write-Error "Path does not exist: $Path"
+        }
+        Else {
+            Write-Error "Path does not exist: $Path"
         }
     }
     End {

@@ -30,15 +30,15 @@ Function Get-FileMetadata {
             Description:
             Scans the folder specified in the Path variable and returns the metadata for each file.
     #>
-    [CmdletBinding(SupportsShouldProcess=$False)]
+    [CmdletBinding(SupportsShouldProcess = $False)]
     Param (
-        [Parameter(Mandatory=$False, ValueFromPipeline=$True, ValueFromPipelineByPropertyName=$True, `
-        HelpMessage='Specify a target path, paths or a list of files to scan for metadata.')]
-        [Alias('FullName','PSPath')]
+        [Parameter(Mandatory = $False, Position = 0, ValueFromPipeline = $True, ValueFromPipelineByPropertyName = $True, `
+                HelpMessage = 'Specify a target path, paths or a list of files to scan for metadata.')]
+        [Alias('FullName', 'PSPath')]
         [string[]]$Path = ".\",
 
-        [Parameter(Mandatory=$False, ValueFromPipeline=$False, `
-        HelpMessage='Gets only the specified items.')]
+        [Parameter(Mandatory = $False, Position = 1, ValueFromPipeline = $False, `
+                HelpMessage = 'Gets only the specified items.')]
         [Alias('Filter')]
         [string[]]$Include = @('*.exe', '*.dll')
     )
@@ -60,7 +60,8 @@ Function Get-FileMetadata {
                 # Target is a folder, so trawl the folder for .exe and .dll files in the target and sub-folders
                 Write-Verbose "Getting metadata for files in folder: $Path"
                 $items = Get-ChildItem -Path $Path -Recurse -Include $Include
-            } Else {
+            }
+            Else {
 
                 # Target is a file, so just get metadata for the file
                 Write-Verbose "Getting metadata for file: $Path"
@@ -69,14 +70,15 @@ Function Get-FileMetadata {
 
             # Create an array from what was returned for specific data and sort on file path
             $Files += $items | Select-Object @{Name = "Path"; Expression = {$_.FullName}}, `
-                @{Name = "Description"; Expression = {$_.VersionInfo.FileDescription}}, `
-                @{Name = "Product"; Expression = {$_.VersionInfo.ProductName}}, `
-                @{Name = "Company"; Expression = {$_.VersionInfo.CompanyName}}, `
-                @{Name = "FileVersion"; Expression = {$_.VersionInfo.FileVersion}}, `
-                @{Name = "ProductVersion"; Expression = {$_.VersionInfo.ProductVersion}}
+            @{Name = "Description"; Expression = {$_.VersionInfo.FileDescription}}, `
+            @{Name = "Product"; Expression = {$_.VersionInfo.ProductName}}, `
+            @{Name = "Company"; Expression = {$_.VersionInfo.CompanyName}}, `
+            @{Name = "FileVersion"; Expression = {$_.VersionInfo.FileVersion}}, `
+            @{Name = "ProductVersion"; Expression = {$_.VersionInfo.ProductVersion}}
 
-        } Else {
-                Write-Error "Path does not exist: $Path"
+        }
+        Else {
+            Write-Error "Path does not exist: $Path"
         }
     }
     End {
