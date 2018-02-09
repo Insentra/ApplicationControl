@@ -13,21 +13,21 @@ Running the script against a folder or set of folders with the following command
     $Path = 'C:\Users\aaron\AppData\Local\Microsoft\Teams', 'C:\Users\aaron\AppData\Local\Microsoft\TeamsMeetingAddin'
     Get-DigitalSignatures -Path $Path | Out-GridView
 
-![All files returned with Get-DigitalSignatures](https://raw.githubusercontent.com/aaronparker/ApplicationControl/master/img/Get-DigitalSignature-All.PNG "All files returned with Get-DigitalSignatures")
+![All files returned with Get-DigitalSignatures](https://raw.githubusercontent.com/aaronparker/ApplicationControl/master/img/DigitalSignature-All.PNG "All files returned with Get-DigitalSignatures")
 
 Running the same command with the -Unique we can return a list of unique certificates across all files.
 
     $Path = 'C:\Users\aaron\AppData\Local\Microsoft\Teams', 'C:\Users\aaron\AppData\Local\Microsoft\TeamsMeetingAddin'
     Get-DigitalSignatures -Path $Path -Unique | Out-GridView
 
-![Unique certificates returned with Get-DigitalSignatures](https://raw.githubusercontent.com/aaronparker/ApplicationControl/master/img/Get-DigitalSignature-Unique.PNG "Unique certificates returned with Get-DigitalSignatures")
+![Unique certificates returned with Get-DigitalSignatures](https://raw.githubusercontent.com/aaronparker/ApplicationControl/master/img/DigitalSignature-Unique.PNG "Unique certificates returned with Get-DigitalSignatures")
 
 Some files might not be signed, so we can filter the results to return all files that are not signed.
 
     $Path = 'C:\Users\aaron\AppData\Local\Microsoft\Teams', 'C:\Users\aaron\AppData\Local\Microsoft\TeamsMeetingAddin'
     Get-DigitalSignatures -Path $Path | Where-Object { $_.Status -eq "NotSigned" } | Get-FileMetadata | Out-GridView
 
-![Files returned with Get-DigitalSignatures and filtered for unsigned files](https://raw.githubusercontent.com/aaronparker/ApplicationControl/master/img/Get-DigitalSignature-NotSigned.PNG "Files returned with Get-DigitalSignatures and filtered for unsigned files")
+![Files returned with Get-DigitalSignatures and filtered for unsigned files](https://raw.githubusercontent.com/aaronparker/ApplicationControl/master/img/DigitalSignature-NotSigned.PNG "Files returned with Get-DigitalSignatures and filtered for unsigned files")
 
 ## Get-FileMetadata
  Gets file metadata from files in a target folder. Returns file Path, Description, Product name, Company Name.
@@ -38,7 +38,7 @@ Some files might not be signed, so we can filter the results to return all files
     $Path = 'C:\Users\aaron\AppData\Local\Microsoft\Teams', 'C:\Users\aaron\AppData\Local\Microsoft\TeamsMeetingAddin'
     $Path | Get-FileMetadata | Out-GridView
 
-![Metadata returned for unsigned files filtered out of Get-DigitalSignatures](https://raw.githubusercontent.com/aaronparker/ApplicationControl/master/img/Get-FileMetadata-NotSigned.PNG "Metadata returned for unsigned files filtered out of Get-DigitalSignatures")
+![Metadata returned for unsigned files filtered out of Get-DigitalSignatures](https://raw.githubusercontent.com/aaronparker/ApplicationControl/master/img/FileMetadata-NotSigned.PNG "Metadata returned for unsigned files filtered out of Get-DigitalSignatures")
 
 ## New-AampConfiguration
 Take the output from Get-FileMetadata and add file paths with metadata to the Accessible items in the Everyone group rule.
