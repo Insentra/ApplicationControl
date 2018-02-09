@@ -51,6 +51,9 @@ Microsoft Teams includes two application paths and most executables are signed; 
     $Files = Get-DigitalSignatures -Path $Path -Verbose | Where-Object { $_.Status -eq "NotSigned" } | Get-FileMetadata -Verbose
     $Files | New-AampConfiguration -Path C:\Temp\Configuration.aamp
 
+Open the temporary configuration and copy and paste into your working config.
+
+![File definitions imported into a temporary configuration](https://raw.githubusercontent.com/aaronparker/ApplicationControl/master/img/AampConfiguration.PNG "File definitions imported into a temporary configuration")
 
 ## ToDo
 Update New-AampConfiguration to create folder rules with Vendor (or trust code-signing certificates for folders with signed executables).
