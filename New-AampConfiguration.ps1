@@ -1,75 +1,110 @@
-# Create the configuration
-$Configuration = $Null
-$Configuration = New-Object -ComObject 'AM.Configuration.5'
+Function New-AampConfiguration {
+  <#
+.SYNOPSIS
+  Creates an Ivanti Application Control configuration from an array of inputs.
+    
+.DESCRIPTION
+  Works with Get-DigitalSignatures and Get-FileMetadata to create an Ivanti Application Control configuration.
+  Intended for making it easier to define an application and create a rule set automatically for copying into a detailed configuration.
 
-# Create the configuration helper
-$ConfigurationHelper = $Null
-$ConfigurationHelper = New-Object -ComObject 'AM.ConfigurationHelper.1'
+  Adds Accessible files with metadata to the Everyone group rule.
 
-# Create default configuration
-$ConfigurationXml = $Null
-$ConfigurationXml = $ConfigurationHelper.DefaultConfiguration
-$Configuration.ParseXML($ConfigurationXml)
+.NOTES
+  Name: New-AampConfiguration.ps1
+  Author: Aaron Parker
+  Twitter: @stealthpuppy
 
-$Path = "C:\Users\aaron\Downloads\Setup-12.21.1.exe"
+.LINK
+  http://stealthpuppy.com
 
-# Add a file to the list of accessible files.
-$AccessibleFile = $Null
-$AccessibleFile = $Configuration.CreateInstanceFromClassName("AM.File")
-$AccessibleFile.Path = $Path
-$AccessibleFile.CommandLine = $Path
-$AccessibleFile.Description = "Microsoft file"
-$AccessibleFile.Metadata.CompanyName = "Microsoft"
-$AccessibleFile.Metadata.CompanyNameEnabled = $True
-$AccessibleFile.Metadata.ProductName = "Microsoft"
-$AccessibleFile.Metadata.ProductNameEnabled = $True
-$AccessibleFile.Metadata.FileDescription = "Microsoft"
-$AccessibleFile.Metadata.FileDescriptionEnabled = $True
+.OUTPUTS
+  [System.Array]
 
-$Configuration.GroupRules.Item("Everyone").AccessibleFiles.Add($AccessibleFile.Xml())
-# $Configuration.GroupRules['Everyone'].AccessibleFiles.Add($AccessibleFile.Xml())
-$ConfigurationHelper.SaveLocalConfiguration("C:\Temp\Configuration.aamp", $Configuration.Xml())
+.PARAMETER AccessibleFiles
 
+.EXAMPLE
+  .\New-AampConfiguration.ps1 -AccessibleFiles $Files -Path "C:\Temp\Configuration.aamp"
 
-
-
-<#
-# create xml file we'll later save into the new aamp as Auditing.xml - to setup local event logging
-'<Configuration ClassName="Common.Auditing.Configuration.0000" SendToApplicationLog="False" SendToProductLog="True" LocalFileLogName="%SYSTEMDRIVE%\AppSenseLogs\Auditing\ApplicationManagerEvents_%COMPUTERNAME%.xml">
-  <EventsToRaise ClassName="Common.Auditing.EventIdentifierDictionary.0000">
-    <EventIdentifier ClassName="Common.Auditing.EventIdentifier.0000" EventID="9000" />
-    <EventIdentifier ClassName="Common.Auditing.EventIdentifier.0000" EventID="9002" />
-    <EventIdentifier ClassName="Common.Auditing.EventIdentifier.0000" EventID="9003" />
-    <EventIdentifier ClassName="Common.Auditing.EventIdentifier.0000" EventID="9099" />
-    <EventIdentifier ClassName="Common.Auditing.EventIdentifier.0000" EventID="9095" />
-  </EventsToRaise>
-</Configuration>' > ($auditFile = [System.IO.Path]::GetTempFileName())
-
-$conf = new-object -comobject 'AM.Configuration.5'
-$confHelper = new-object -comobject 'AM.ConfigurationHelper.1'
-
-# load the default configuration
-$confXml = $confHelper.DefaultConfiguration
-
-#$confXml = $confHelper.LoadLocalConfiguration('C:\temp\test.aamp')
-$conf.ParseXML($confXml)
-
-$conf.GroupRules['Everyone'].TrustedVendors
-$filePath = 'C:\TrustedFolder\SlackSetup.exe'
-
-$tv = $conf.ManufactureInstanceFromClassName('AM.DigitalCertificate')
-$tv.RawCertificateData = $confHelper.ReadCertificateFromFile($filePath,0)
-
-$dt = [datetime]::MinValue
-
-######### date retrieval logic NOT REALLY WORKING
-$confHelper.ReadCertificateDateFromFile($filePath,0, [ref] $dt)
-$tv.ExpiryDate = $dt.ToString()
-######### THIS PROBABLY ISN'T RIGHT EITHER
-
-$tv.Description = (Get-AuthenticodeSignature -FilePath $filePath).SignerCertificate.DnsNameList.Unicode
-$tv.IssuedTo = (Get-AuthenticodeSignature -FilePath $filePath).SignerCertificate.DnsNameList.Unicode
-
-$conf.GroupRules['Everyone'].TrustedVendors.Add($tv.XML())
-$confHelper.SaveLocalConfigurationWithAuditingFile($env:userprofile + '\Desktop\Config.aamp',$conf.XML(),$auditFile)
+  Description:
+  Adds files and metadata in the array $Files to a new Application Control configuration at "C:\Temp\Configuration.aamp".
 #>
+  [CmdletBinding(SupportsShouldProcess = $False)]
+  Param (
+      [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline = $True, `
+              HelpMessage = 'Specify the array of accessible files with metadata to add.')]
+      [array]$AccessibleFiles,
+
+      [Parameter(Mandatory = $False, Position = 1, ValueFromPipeline = $False, `
+              HelpMessage = 'Specify a path to the configuration to output.')]
+      [string]$Path = "C:\Temp\Configuration.aamp"
+  )
+
+  Begin {
+      # Variables
+      $GroupRule = "Everyone"
+
+      Function ConvertTo-EnvironmentPath {
+          <#
+      .SYNOPSIS
+        Replaces strings in a file path with environment variables.
+    #>
+          Param (
+              [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline = $False)]
+              [string]$Path
+          )
+          $RegExLocalAppData = "^[a-zA-Z]:\\Users\\.*\\AppData\\Local\\"
+          $RegExAppData = "^[a-zA-Z]:\\Users\\.*\\AppData\\Roaming\\"
+          $RegExTemp = "^[a-zA-Z]:\\Users\\.*\\AppData\\Local\\Temp\\"
+          $RegExProgramData = "^[a-zA-Z]:\\ProgramData\\"
+          $RegExProgramFiles = "^[a-zA-Z]:\\Program Files\\"
+          $RegExProgramFilesx86 = "^[a-zA-Z]:\\Program Files (x86)\\"
+          $RegExSystemRoot = "^[a-zA-Z]:\\Windows\\"
+          $RegExPublic = "^[a-zA-Z]:\\Users\\Public\\"
+  
+          Switch -Regex ($Path) {
+              { $_ -match $RegExLocalAppData } { $Path = $Path -replace $RegExLocalAppData, "%LOCALAPPDATA%\" }
+              { $_ -match $RegExAppData } { $Path = $Path -replace $RegExAppData, "%APPDATA%\" }
+              { $_ -match $RegExTemp } { $Path = $Path -replace $RegExRoamingAppData, "%TEMP%\" }
+              { $_ -match $RegExProgramData } { $Path = $Path -replace $RegExProgramData, "%ProgramData%\" }
+              { $_ -match $RegExProgramFiles } { $Path = $Path -replace $RegExProgramFiles, "%ProgramFiles%\" }
+              { $_ -match $RegExProgramFilesx86 } { $Path = $Path -replace $RegExProgramFilesx86, "%ProgramFiles(x86)%\" }
+              { $_ -match $RegExSystemRoot } { $Path = $Path -replace $RegExSystemRoot, "%SystemRoot%\" }
+              { $_ -match $RegExPublic } { $Path = $Path -replace $RegExPublic, "%PUBLIC%\" }
+          }
+          $Path
+      }
+
+      # Create the configuration; Create the configuration helper
+      Write-Verbose "Loading object 'AM.Configuration.5'."
+      Try { $Configuration = New-Object -ComObject 'AM.Configuration.5' -ErrorAction SilentlyContinue } Catch { Throw "Unable to load COM Object 'AM.Configuration.5'" }
+      Write-Verbose "Loading object 'AM.ConfigurationHelper.1'."
+      Try { $ConfigurationHelper = New-Object -ComObject 'AM.ConfigurationHelper.1' -ErrorAction SilentlyContinue } Catch { Throw "Unable to load COM Object 'AM.ConfigurationHelper.1'" }
+
+      # Create default configuration
+      $ConfigurationXml = $ConfigurationHelper.DefaultConfiguration
+      $Configuration.ParseXML($ConfigurationXml)
+  }
+  Process {
+      ForEach ($file in $AccessibleFiles) {
+          # Add a file to the list of accessible files.
+          Write-Verbose "Adding $(ConvertTo-EnvironmentPath -Path $file.Path)"
+          $AccessibleFile = $Configuration.CreateInstanceFromClassName("AM.File")
+          $AccessibleFile.Path = $(ConvertTo-EnvironmentPath -Path $file.Path)
+          $AccessibleFile.CommandLine = $(ConvertTo-EnvironmentPath -Path $file.Path)
+          $AccessibleFile.Description = $file.Description
+          $AccessibleFile.Metadata.CompanyName = $file.Company
+          $AccessibleFile.Metadata.CompanyNameEnabled = $True
+          $AccessibleFile.Metadata.ProductName = $file.Product
+          $AccessibleFile.Metadata.ProductNameEnabled = $True
+          $AccessibleFile.Metadata.FileDescription = $file.Description
+          $AccessibleFile.Metadata.FileDescriptionEnabled = $True  
+          $Configuration.GroupRules.Item($GroupRule).AccessibleFiles.Add($AccessibleFile.Xml()) | Out-Null
+          Remove-Variable AccessibleFile
+      }
+  }
+  End {
+      Write-Verbose "Saving configuration to: $Path"
+      $ConfigurationHelper.SaveLocalConfiguration($Path, $Configuration.Xml())
+      $Path
+  }
+}
