@@ -11,21 +11,24 @@ $ConfigurationXml = $Null
 $ConfigurationXml = $ConfigurationHelper.DefaultConfiguration
 $Configuration.ParseXML($ConfigurationXml)
 
+$Path = "C:\Users\aaron\Downloads\Setup-12.21.1.exe"
+
 # Add a file to the list of accessible files.
 $AccessibleFile = $Null
 $AccessibleFile = $Configuration.CreateInstanceFromClassName("AM.File")
-$AccessibleFile.Path = "C:\Users\aaron\Downloads\Setup-12.21.1.exe"
-<# $AccessibleFile.Description = "Microsoft file"
+$AccessibleFile.Path = $Path
+$AccessibleFile.CommandLine = $Path
+$AccessibleFile.Description = "Microsoft file"
 $AccessibleFile.Metadata.CompanyName = "Microsoft"
 $AccessibleFile.Metadata.CompanyNameEnabled = $True
 $AccessibleFile.Metadata.ProductName = "Microsoft"
 $AccessibleFile.Metadata.ProductNameEnabled = $True
 $AccessibleFile.Metadata.FileDescription = "Microsoft"
-$AccessibleFile.Metadata.FileDescriptionEnabled = $True #>
+$AccessibleFile.Metadata.FileDescriptionEnabled = $True
 
-# $Configuration.GroupRules.Item("Everyone").AccessibleFiles.Add($AccessibleFile.Xml())
-$Configuration.GroupRules['Everyone'].AccessibleFiles.Add($AccessibleFile.Xml())
-$ConfigurationHelper.SaveLocalConfiguration("C:\Temp\Configuration.aamp", $ConfigurationXml)
+$Configuration.GroupRules.Item("Everyone").AccessibleFiles.Add($AccessibleFile.Xml())
+# $Configuration.GroupRules['Everyone'].AccessibleFiles.Add($AccessibleFile.Xml())
+$ConfigurationHelper.SaveLocalConfiguration("C:\Temp\Configuration.aamp", $Configuration.Xml())
 
 
 
