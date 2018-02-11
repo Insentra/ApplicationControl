@@ -98,11 +98,11 @@ Function Get-DigitalSignatures {
         If (Test-Path -Path $Path -IsValid) {
 
             # Get the item to determine whether it's a file or folder
-            If ((Get-Item -Path $Path).PSIsContainer) {
+            If ((Get-Item -Path $Path -Force).PSIsContainer) {
 
                 # Target is a folder, so trawl the folder for .exe and .dll files in the target and sub-folders
                 Write-Verbose "Scanning files in folder: $Path"
-                $items = Get-ChildItem -Path $Path -Recurse -Include $Include
+                $items = Get-ChildItem -Path $Path -Recurse -File -Include $Include
             }
             Else {
 
