@@ -1,3 +1,4 @@
+#Requires -Version 3
 Function Get-FileMetadata {
     <#
         .SYNOPSIS
@@ -13,7 +14,7 @@ Function Get-FileMetadata {
             Twitter: @stealthpuppy
         
         .LINK
-            http://stealthpuppy.com
+            https://stealthpuppy.com
 
         .OUTPUTS
             [System.Array]

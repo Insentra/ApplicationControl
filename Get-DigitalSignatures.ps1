@@ -1,3 +1,4 @@
+#Requires -Version 3
 Function Get-DigitalSignatures {
     <#
         .SYNOPSIS
@@ -14,7 +15,7 @@ Function Get-DigitalSignatures {
             Twitter: @stealthpuppy
         
         .LINK
-            http://stealthpuppy.com
+            https://stealthpuppy.com
 
         .OUTPUTS
             [System.Array]
@@ -25,7 +26,7 @@ Function Get-DigitalSignatures {
         .PARAMETER Include
             Gets only the specified items.
 
-        .PARAMETER OutPath
+        .PARAMETER Export
             A target path to export certificates in P7B file format to. Each file will be named for the certificte thumbprint.
 
         .PARAMETER Unique
@@ -41,7 +42,7 @@ Function Get-DigitalSignatures {
             Scans the folder specified in the Path variable and returns the digital signatures for each file.
 
         .EXAMPLE
-            .\Get-DigitalSignatures.ps1 -Path "C:\Users\aaron\AppData\Local\GitHubDesktop" -OutPath C:\Temp
+            .\Get-DigitalSignatures.ps1 -Path "C:\Users\aaron\AppData\Local\GitHubDesktop" -Export C:\Temp
 
             Description:
             Scans the folder specified in the Path variable and returns the digital signatures for each file.
@@ -65,9 +66,9 @@ Function Get-DigitalSignatures {
         [Alias('Filter')]
         [string[]]$Include = @('*.exe', '*.dll'),
 
-        [Parameter(ParameterSetName = 'Base', Mandatory = $False, HelpMessage = 'Output certificates to files in a specific folder.')]
+        [Parameter(ParameterSetName = 'Base', Mandatory = $False, HelpMessage = 'Export certificates to files in a specific folder.')]
         [ValidateScript( { If (Test-Path $_ -PathType 'Container') { $True } Else { Throw "Cannot find output path $_" } })]
-        [string]$OutPath,
+        [string]$Export,
 
         [Parameter(ParameterSetName = 'Base', Mandatory = $False)]
         [switch]$Unique,
@@ -83,11 +84,16 @@ Function Get-DigitalSignatures {
         Function Export-P7bFile {
             Param (
                 [string]$File,
-                [string]$OutPath
+                [string]$Path
             )
-            $cert = (Get-AuthenticodeSignature $File).SignerCertificate
-            Write-Verbose "Exporting certificate: $OutPath\$($cert.Thumbprint).p7b"
-            Export-Certificate -Cert $cert -FilePath "$OutPath\$($cert.Thumbprint).p7b" -Type P7B
+            If (Get-Module -Name PKI -ErrorAction SilentlyContinue) {
+                $cert = (Get-AuthenticodeSignature $File).SignerCertificate
+                Write-Verbose "Exporting certificate: $Path\$($cert.Thumbprint).p7b"
+                Export-Certificate -Cert $cert -FilePath "$Path\$($cert.Thumbprint).p7b" -Type P7B    
+            } Else {
+                Write-Verbose "Missing module PKI. Unable to export certificate."
+                $Null
+            }
         }
         
         # Initialise $Signatures as an array
@@ -127,7 +133,8 @@ Function Get-DigitalSignatures {
     }
     End {
         # If -Unique is specified, filter the signatures list and return the first item of each unique certificate
-        If ($Outpath -or $Unique) { 
+        # If -Export is specified, we also only want unique certificate files
+        If ($Export -or $Unique) { 
             Write-Verbose "Filtering for unique signatures."
             $Signatures = $Signatures | Where-Object {$_.Status -eq "Valid" -or $_.Status -eq "UnknownError" } | `
                 Group-Object -Property Thumbprint | `
@@ -136,10 +143,10 @@ Function Get-DigitalSignatures {
         }
 
         # Output the a P7b certificate file for each unique certificate found from files in the folder
-        If ($OutPath) {
-            Write-Verbose "Exporting certificate P7B files to $Outpath."
+        If ($Export) {
+            Write-Verbose "Exporting certificate P7B files to $Export."
             ForEach ( $file in $Signatures.Path ) {
-                Export-P7bFile -File $file -OutPath $OutPath | Out-Null
+                Export-P7bFile -File $file -Path $Export | Out-Null
             } 
         }
 
