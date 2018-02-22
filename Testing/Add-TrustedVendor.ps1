@@ -5,14 +5,15 @@ Try { $Configuration = New-Object -ComObject 'AM.Configuration.5' -ErrorAction S
 Write-Verbose "Loading object 'AM.ConfigurationHelper.1'."
 Try { $ConfigurationHelper = New-Object -ComObject 'AM.ConfigurationHelper.1' -ErrorAction SilentlyContinue } Catch { Throw "Unable to load COM Object 'AM.ConfigurationHelper.1'" }
 
-        # Create default configuration
-        $ConfigurationXml = $ConfigurationHelper.DefaultConfiguration
-        $Configuration.ParseXML($ConfigurationXml)
+# Create default configuration
+$ConfigurationXml = $ConfigurationHelper.DefaultConfiguration
+$Configuration.ParseXML($ConfigurationXml)
+
+$filePath = "C:\Program Files\Internet Explorer\iexplore.exe"
 
 # Use the helper object to read the certificate and expiry date from the signed file
-[string]$dtMyDate = "xx"
-# $dtMyDate = [datetime]::MinValue
-$CertificateData = $ConfigurationHelper.ReadCertificateDateFromFile("C:\Program Files\Internet Explorer\iexplore.exe", 0, $dtMyDate)
+[ref]$dtMyDate = New-Object System.Object
+$CertificateData = $ConfigurationHelper.ReadCertificateDateFromFile($filePath, 0, $dtMyDate)
 Write-Host $dtMyDate
 
 # Add the certificate information to the configuration

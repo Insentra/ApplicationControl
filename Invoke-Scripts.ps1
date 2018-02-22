@@ -2,7 +2,7 @@
 . .\Get-FileMetadata.ps1
 . .\New-AampConfiguration.ps1
 
-$Path = "C:\Users\aaron\AppData\Local\GitHubDesktop"
+<# $Path = "C:\Users\aaron\AppData\Local\GitHubDesktop"
 Get-DigitalSignatures -Path $Path -OutPath "C:\Temp\GitHubDesktop" -Verbose
 Get-DigitalSignatures -Path $Path -Verbose | Where-Object { $_.Status -eq "NotSigned" } | Get-FileMetadata -Verbose | New-AampConfiguration -Path C:\Temp\GitHubDesktop.aamp
 
@@ -53,3 +53,4 @@ $Path = "C:\Temp\SysinternalsSuite"
 Get-DigitalSignatures -Path $Path -OutPath "C:\Temp\Sysinternals" -Verbose
 $Files = Get-DigitalSignatures -Path $Path -Verbose | Where-Object { $_.Status -eq "NotSigned" } | Get-FileMetadata -Verbose
 
+#>
