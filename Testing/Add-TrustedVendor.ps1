@@ -15,15 +15,15 @@ $CertificateData = $ConfigurationHelper.ReadCertificateDateFromFile($filePath, 0
 
 # Get details from the certificate for Issuer and Subject
 # Could look at simplifying reading the certificate by using X509Certificate2 instead of AM.ConfigurationHelper.1
-$SubjectName = "(?xi)(?:CN=)(.*?),.*"
+$FindCN = "(?xi)(?:CN=)(.*?),.*"
 $CertObj = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2
 $CertObj.Import($filePath)
 
 # Add the certificate information to the configuration
 $DigitalCertificate = $Configuration.CreateInstanceFromClassName("AM.DigitalCertificate")
 $DigitalCertificate.RawCertificateData = $CertificateData
-$DigitalCertificate.Description = $CertObj.Issuer -replace $SubjectName, '$1'
-$DigitalCertificate.IssuedTo = $CertObj.Subject -replace $SubjectName, '$1'
+$DigitalCertificate.Description = $CertObj.Issuer -replace $FindCN, '$1'
+$DigitalCertificate.IssuedTo = $CertObj.Subject -replace $FindCN, '$1'
 $DigitalCertificate.ExpiryDate = "$($dtMyDate.Value.ToShortDateString()) $($dtMyDate.Value.ToShortTimeString())"
 $DigitalCertificate = $Configuration.GroupRules.Item("Everyone").TrustedVendors.Add($DigitalCertificate.Xml())
 
