@@ -1,6 +1,5 @@
 #Requires -Version 3
-Function Get-DigitalSignatures {
-    <#
+<#
         .SYNOPSIS
             Get digital signatures from files in a target folder.
         
@@ -54,108 +53,106 @@ Function Get-DigitalSignatures {
             Description:
             Scans the folder specified in the Path variable and returns the digital signatures for only the first file with a unique certificate.
     #>
-    [CmdletBinding(SupportsShouldProcess = $False, DefaultParameterSetName = 'Base')]
-    Param (
-        [Parameter(ParameterSetName = 'Base', Mandatory = $False, Position = 0, ValueFromPipeline = $True, ValueFromPipelineByPropertyName = $True, `
-                HelpMessage = 'Specify a target path in which to scan files for digital signatures.')]
-        [Alias('FullName', 'PSPath')]
-        [string[]]$Path,
+[CmdletBinding(SupportsShouldProcess = $False, DefaultParameterSetName = 'Base')]
+Param (
+    [Parameter(ParameterSetName = 'Base', Mandatory = $False, Position = 0, ValueFromPipeline = $True, ValueFromPipelineByPropertyName = $True, `
+            HelpMessage = 'Specify a target path in which to scan files for digital signatures.')]
+    [Alias('FullName', 'PSPath')]
+    [string[]]$Path,
 
-        [Parameter(Mandatory = $False, Position = 1, ValueFromPipeline = $False, `
-                HelpMessage = 'Gets only the specified items.')]
-        [Alias('Filter')]
-        [string[]]$Include = @('*.exe', '*.dll'),
+    [Parameter(Mandatory = $False, Position = 1, ValueFromPipeline = $False, `
+            HelpMessage = 'Gets only the specified items.')]
+    [Alias('Filter')]
+    [string[]]$Include = @('*.exe', '*.dll'),
 
-        [Parameter(ParameterSetName = 'Base', Mandatory = $False, HelpMessage = 'Export certificates to files in a specific folder.')]
-        [ValidateScript( { If (Test-Path $_ -PathType 'Container') { $True } Else { Throw "Cannot find output path $_" } })]
-        [string]$Export,
+    [Parameter(ParameterSetName = 'Base', Mandatory = $False, HelpMessage = 'Export certificates to files in a specific folder.')]
+    [ValidateScript( { If (Test-Path $_ -PathType 'Container') { $True } Else { Throw "Cannot find output path $_" } })]
+    [string]$Export,
 
-        [Parameter(ParameterSetName = 'Base', Mandatory = $False)]
-        [switch]$Unique,
+    [Parameter(ParameterSetName = 'Base', Mandatory = $False)]
+    [switch]$Unique,
 
-        [Parameter(ParameterSetName = 'Base', Mandatory = $False)]
-        [switch]$Gridview
-    )
+    [Parameter(ParameterSetName = 'Base', Mandatory = $False)]
+    [switch]$Gridview
+)
+Begin {
+    # Measure time taken to gather data
+    $StopWatch = [system.diagnostics.stopwatch]::StartNew()
 
-    Begin {
-        # Measure time taken to gather data
-        $StopWatch = [system.diagnostics.stopwatch]::StartNew()
-
-        Function Export-P7bFile {
-            Param (
-                [string]$File,
-                [string]$Path
-            )
-            If (Get-Module -Name PKI -ErrorAction SilentlyContinue) {
-                $cert = (Get-AuthenticodeSignature $File).SignerCertificate
-                Write-Verbose "Exporting certificate: $Path\$($cert.Thumbprint).p7b"
-                Export-Certificate -Cert $cert -FilePath "$Path\$($cert.Thumbprint).p7b" -Type P7B    
-            } Else {
-                Write-Verbose "Missing module PKI. Unable to export certificate."
-                $Null
-            }
-        }
-        
-        # Initialise $Signatures as an array
-        $Signatures = @()
-    }
-    Process {
-        # For each path in $Path, check that the path exists
-        If (Test-Path -Path $Path -IsValid) {
-
-            # Get the item to determine whether it's a file or folder
-            If ((Get-Item -Path $Path -Force).PSIsContainer) {
-
-                # Target is a folder, so trawl the folder for .exe and .dll files in the target and sub-folders
-                Write-Verbose "Scanning files in folder: $Path"
-                $items = Get-ChildItem -Path $Path -Recurse -File -Include $Include
-            }
-            Else {
-
-                # Target is a file, so just get metadata for the file
-                Write-Verbose "Scanning file: $Path"
-                $items = Get-ChildItem -Path $Path
-            }
-
-            # Get Exe and Dll files from the target path (inc. subfolders), find signatures and return certain properties in a grid view
-            Write-Verbose "Getting digital signatures for: $Path"
-            $Signatures += $items | Get-AuthenticodeSignature | `
-                Select-Object @{Name = "Thumbprint"; Expression = {$_.SignerCertificate.Thumbprint}}, `
-            @{Name = "Subject"; Expression = {$_.SignerCertificate.Subject}}, `
-            @{Name = "Expiry"; Expression = {$_.SignerCertificate.NotAfter}}, `
-                Status, `
-                Path
-
+    Function Export-P7bFile {
+        Param (
+            [string]$File,
+            [string]$Path
+        )
+        If (Get-Module -Name PKI -ErrorAction SilentlyContinue) {
+            $cert = (Get-AuthenticodeSignature $File).SignerCertificate
+            Write-Verbose "Exporting certificate: $Path\$($cert.Thumbprint).p7b"
+            Export-Certificate -Cert $cert -FilePath "$Path\$($cert.Thumbprint).p7b" -Type P7B    
         }
         Else {
-            Write-Error "Path does not exist: $Path"
+            Write-Verbose "Missing module PKI. Unable to export certificate."
+            $Null
         }
     }
-    End {
-        # If -Unique is specified, filter the signatures list and return the first item of each unique certificate
-        # If -Export is specified, we also only want unique certificate files
-        If ($Export -or $Unique) { 
-            Write-Verbose "Filtering for unique signatures."
-            $Signatures = $Signatures | Where-Object {$_.Status -eq "Valid" -or $_.Status -eq "UnknownError" } | `
-                Group-Object -Property Thumbprint | `
-                ForEach-Object { $_.Group | Select-Object -First 1 }
-            Write-Verbose "$($Signatures.Count) unique signature/s found in $Path"
+        
+    # Initialise $Signatures as an array
+    $Signatures = @()
+}
+Process {
+    # For each path in $Path, check that the path exists
+    If (Test-Path -Path $Path -IsValid) {
+
+        # Get the item to determine whether it's a file or folder
+        If ((Get-Item -Path $Path -Force).PSIsContainer) {
+
+            # Target is a folder, so trawl the folder for .exe and .dll files in the target and sub-folders
+            Write-Verbose "Scanning files in folder: $Path"
+            $items = Get-ChildItem -Path $Path -Recurse -File -Include $Include
+        }
+        Else {
+
+            # Target is a file, so just get metadata for the file
+            Write-Verbose "Scanning file: $Path"
+            $items = Get-ChildItem -Path $Path
         }
 
-        # Output the a P7b certificate file for each unique certificate found from files in the folder
-        If ($Export) {
-            Write-Verbose "Exporting certificate P7B files to $Export."
-            ForEach ( $file in $Signatures.Path ) {
-                Export-P7bFile -File $file -Path $Export | Out-Null
-            } 
-        }
-
-        # If Gridview switch specified, output to a Grid View
-        If ($Gridview) { $Signatures | Out-GridView -Title "Digital Signatures: $Path" }
-
-        # Return output
-        $StopWatch.Stop()
-        Write-Verbose "Digital signature trawling complete. Script took $($StopWatch.Elapsed.TotalMilliseconds) ms to complete."
-        Return $Signatures | Sort-Object -Property Thumbprint
+        # Get Exe and Dll files from the target path (inc. subfolders), find signatures and return certain properties in a grid view
+        Write-Verbose "Getting digital signatures for: $Path"
+        $Signatures += $items | Get-AuthenticodeSignature | `
+            Select-Object @{Name = "Thumbprint"; Expression = {$_.SignerCertificate.Thumbprint}}, `
+        @{Name = "Subject"; Expression = {$_.SignerCertificate.Subject}}, `
+        @{Name = "Expiry"; Expression = {$_.SignerCertificate.NotAfter}}, `
+            Status, `
+            Path
     }
+    Else {
+        Write-Error "Path does not exist: $Path"
+    }
+}
+End {
+    # If -Unique is specified, filter the signatures list and return the first item of each unique certificate
+    # If -Export is specified, we also only want unique certificate files
+    If ($Export -or $Unique) { 
+        Write-Verbose "Filtering for unique signatures."
+        $Signatures = $Signatures | Where-Object {$_.Status -eq "Valid" -or $_.Status -eq "UnknownError" } | `
+            Group-Object -Property Thumbprint | `
+            ForEach-Object { $_.Group | Select-Object -First 1 }
+        Write-Verbose "$($Signatures.Count) unique signature/s found in $Path"
+    }
+
+    # Output the a P7b certificate file for each unique certificate found from files in the folder
+    If ($Export) {
+        Write-Verbose "Exporting certificate P7B files to $Export."
+        ForEach ( $file in $Signatures.Path ) {
+            Export-P7bFile -File $file -Path $Export | Out-Null
+        } 
+    }
+
+    # If Gridview switch specified, output to a Grid View
+    If ($Gridview) { $Signatures | Out-GridView -Title "Digital Signatures: $Path" }
+
+    # Return output
+    $StopWatch.Stop()
+    Write-Verbose "Digital signature trawling complete. Script took $($StopWatch.Elapsed.TotalMilliseconds) ms to complete."
+    Return $Signatures | Sort-Object -Property Thumbprint
 }
