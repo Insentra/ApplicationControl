@@ -1,4 +1,3 @@
-#Requires -Version 3
 <#
         .SYNOPSIS
             Get digital signatures from files in a target folder.
@@ -52,7 +51,8 @@
 
             Description:
             Scans the folder specified in the Path variable and returns the digital signatures for only the first file with a unique certificate.
-    #>
+#>
+# Requires -Version 3
 [CmdletBinding(SupportsShouldProcess = $False, DefaultParameterSetName = 'Base')]
 Param (
     [Parameter(ParameterSetName = 'Base', Mandatory = $False, Position = 0, ValueFromPipeline = $True, ValueFromPipelineByPropertyName = $True, `

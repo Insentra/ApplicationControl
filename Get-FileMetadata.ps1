@@ -1,4 +1,3 @@
-#Requires -Version 3
 <#
         .SYNOPSIS
             Get file metadata from files in a target folder.
@@ -29,13 +28,14 @@
 
             Description:
             Scans the folder specified in the Path variable and returns the metadata for each file.
-    #>
+#>
+# Requires -Version 3
 [CmdletBinding(SupportsShouldProcess = $False)]
 Param (
-    [Parameter(Mandatory = $False, Position = 0, ValueFromPipeline = $True, ValueFromPipelineByPropertyName = $True, `
+    [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline = $True, ValueFromPipelineByPropertyName = $True, `
             HelpMessage = 'Specify a target path, paths or a list of files to scan for metadata.')]
     [Alias('FullName', 'PSPath')]
-    [string[]]$Path = ".\",
+    [string[]]$Path,
 
     [Parameter(Mandatory = $False, Position = 1, ValueFromPipeline = $False, `
             HelpMessage = 'Gets only the specified items.')]
