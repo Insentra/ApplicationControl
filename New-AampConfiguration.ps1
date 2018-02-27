@@ -104,6 +104,11 @@ Begin {
         Throw "Unable to load COM Object 'AM.ConfigurationHelper.1'"
     }
 
+    # Create configuration objects
+    $AccessibleFile = $Configuration.CreateInstanceFromClassName("AM.File")
+    $AccessibleFolder = $Configuration.CreateInstanceFromClassName("AM.Folder")
+    $DigitalCertificate = $Configuration.CreateInstanceFromClassName("AM.DigitalCertificate")
+
     # RegEx to grab CN from certificates
     $FindCN = "(?xi)(?:CN=)(.*?),.*"
 
@@ -123,7 +128,6 @@ Process {
         ForEach ($file in $AccessibleFiles) {
             # Add a file to the list of accessible files.
             Write-Verbose "[Adding Accessible File] $(ConvertTo-EnvironmentPath -Path $file.Path)"
-            $AccessibleFile = $Configuration.CreateInstanceFromClassName("AM.File")
             $AccessibleFile.Path = $(ConvertTo-EnvironmentPath -Path $file.Path)
             $AccessibleFile.CommandLine = $(ConvertTo-EnvironmentPath -Path $file.Path)
             If ($file.Company) {
@@ -155,7 +159,6 @@ Process {
             # Add a file to the list of accessible files.
             $FolderPath = Split-Path -Path $file.Path -Parent
             Write-Verbose "[Adding Accessible Folder] $(ConvertTo-EnvironmentPath -Path $FolderPath)"
-            $AccessibleFolder = $Configuration.CreateInstanceFromClassName("AM.Folder")
             $AccessibleFolder.ItemKey = $(ConvertTo-EnvironmentPath -Path $FolderPath)
             $AccessibleFolder.Path = $(ConvertTo-EnvironmentPath -Path $FolderPath)
             $AccessibleFolder.Recursive = $True
@@ -200,7 +203,6 @@ Process {
             # Build Trusted Vendor certificate; Add the certificate information to the configuration
             Write-Verbose "Certificate: $($CertObj.Subject); $($dtMyDate.Value.ToShortDateString()) $($dtMyDate.Value.ToShortTimeString())"
             Write-Verbose "Issuer: $($CertObj.Issuer)"
-            $DigitalCertificate = $Configuration.CreateInstanceFromClassName("AM.DigitalCertificate")
             $DigitalCertificate.RawCertificateData = $CertificateData
             $DigitalCertificate.Description = "Issuer: $($CertObj.Issuer -replace $FindCN, '$1'). Thumbprint: $($CertObj.Thumbprint)"
             $DigitalCertificate.IssuedTo = $CertObj.Subject -replace $FindCN, '$1'

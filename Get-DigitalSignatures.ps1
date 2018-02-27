@@ -100,33 +100,35 @@ Begin {
 }
 Process {
     # For each path in $Path, check that the path exists
-    If (Test-Path -Path $Path -IsValid) {
+    ForEach ($Loc in $Path) {
+        If (Test-Path -Path $Loc -IsValid) {
 
-        # Get the item to determine whether it's a file or folder
-        If ((Get-Item -Path $Path -Force).PSIsContainer) {
+            # Get the item to determine whether it's a file or folder
+            If ((Get-Item -Path $Loc -Force).PSIsContainer) {
 
-            # Target is a folder, so trawl the folder for .exe and .dll files in the target and sub-folders
-            Write-Verbose "Scanning files in folder: $Path"
-            $items = Get-ChildItem -Path $Path -Recurse -File -Include $Include
+                # Target is a folder, so trawl the folder for .exe and .dll files in the target and sub-folders
+                Write-Verbose "Scanning files in folder: $Loc"
+                $items = Get-ChildItem -Path $Loc -Recurse -File -Include $Include
+            }
+            Else {
+
+                # Target is a file, so just get metadata for the file
+                Write-Verbose "Scanning file: $Loc"
+                $items = Get-ChildItem -Path $Loc
+            }
+
+            # Get Exe and Dll files from the target path (inc. subfolders), find signatures and return certain properties in a grid view
+            Write-Verbose "Getting digital signatures for: $Loc"
+            $Signatures += $items | Get-AuthenticodeSignature | `
+                Select-Object @{Name = "Thumbprint"; Expression = {$_.SignerCertificate.Thumbprint}}, `
+            @{Name = "Subject"; Expression = {$_.SignerCertificate.Subject}}, `
+            @{Name = "Expiry"; Expression = {$_.SignerCertificate.NotAfter}}, `
+                Status, `
+                Path
         }
         Else {
-
-            # Target is a file, so just get metadata for the file
-            Write-Verbose "Scanning file: $Path"
-            $items = Get-ChildItem -Path $Path
+            Write-Error "Path does not exist: $Loc"
         }
-
-        # Get Exe and Dll files from the target path (inc. subfolders), find signatures and return certain properties in a grid view
-        Write-Verbose "Getting digital signatures for: $Path"
-        $Signatures += $items | Get-AuthenticodeSignature | `
-            Select-Object @{Name = "Thumbprint"; Expression = {$_.SignerCertificate.Thumbprint}}, `
-        @{Name = "Subject"; Expression = {$_.SignerCertificate.Subject}}, `
-        @{Name = "Expiry"; Expression = {$_.SignerCertificate.NotAfter}}, `
-            Status, `
-            Path
-    }
-    Else {
-        Write-Error "Path does not exist: $Path"
     }
 }
 End {

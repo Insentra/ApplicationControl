@@ -51,33 +51,35 @@ Begin {
 }
 Process {
     # For each path in $Path, check that the path exists
-    If (Test-Path -Path $Path -IsValid) {
+    ForEach ($Loc in $Path) {
+        If (Test-Path -Path $Loc -IsValid) {
 
-        # Get the item to determine whether it's a file or folder
-        If ((Get-Item -Path $Path).PSIsContainer) {
+            # Get the item to determine whether it's a file or folder
+            If ((Get-Item -Path $Loc).PSIsContainer) {
 
-            # Target is a folder, so trawl the folder for .exe and .dll files in the target and sub-folders
-            Write-Verbose "Getting metadata for files in folder: $Path"
-            $items = Get-ChildItem -Path $Path -Recurse -Include $Include
+                # Target is a folder, so trawl the folder for .exe and .dll files in the target and sub-folders
+                Write-Verbose "Getting metadata for files in folder: $Loc"
+                $items = Get-ChildItem -Path $Loc -Recurse -Include $Include
+            }
+            Else {
+
+                # Target is a file, so just get metadata for the file
+                Write-Verbose "Getting metadata for file: $Loc"
+                $items = Get-ChildItem -Path $Loc
+            }
+
+            # Create an array from what was returned for specific data and sort on file path
+            $Files += $items | Select-Object @{Name = "Path"; Expression = {$_.FullName}}, `
+            @{Name = "Description"; Expression = {$_.VersionInfo.FileDescription}}, `
+            @{Name = "Product"; Expression = {$_.VersionInfo.ProductName}}, `
+            @{Name = "Company"; Expression = {$_.VersionInfo.CompanyName}}, `
+            @{Name = "FileVersion"; Expression = {$_.VersionInfo.FileVersion}}, `
+            @{Name = "ProductVersion"; Expression = {$_.VersionInfo.ProductVersion}}
+
         }
         Else {
-
-            # Target is a file, so just get metadata for the file
-            Write-Verbose "Getting metadata for file: $Path"
-            $items = Get-ChildItem -Path $Path
+            Write-Error "Path does not exist: $Loc"
         }
-
-        # Create an array from what was returned for specific data and sort on file path
-        $Files += $items | Select-Object @{Name = "Path"; Expression = {$_.FullName}}, `
-        @{Name = "Description"; Expression = {$_.VersionInfo.FileDescription}}, `
-        @{Name = "Product"; Expression = {$_.VersionInfo.ProductName}}, `
-        @{Name = "Company"; Expression = {$_.VersionInfo.CompanyName}}, `
-        @{Name = "FileVersion"; Expression = {$_.VersionInfo.FileVersion}}, `
-        @{Name = "ProductVersion"; Expression = {$_.VersionInfo.ProductVersion}}
-
-    }
-    Else {
-        Write-Error "Path does not exist: $Path"
     }
 }
 End {
