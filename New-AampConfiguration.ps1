@@ -1,4 +1,3 @@
-# Requires -Version 3
 <#
         .SYNOPSIS
           Creates an Ivanti Application Control configuration from an array of inputs.
@@ -34,6 +33,7 @@
           Description:
           Adds Trusted Vendor certificates from the files in the array $SignedFiles to a new Application Control configuration at "C:\Temp\Configuration.aamp".
 #>
+# Requires -Version 3
 [CmdletBinding(SupportsShouldProcess = $False)]
 Param (
     [Parameter(Mandatory = $False, Position = 0, ValueFromPipeline = $True, ValueFromPipelineByPropertyName = $False, `
@@ -122,41 +122,64 @@ Process {
     If ($PSBoundParameters.ContainsKey('AccessibleFiles')) {
         ForEach ($file in $AccessibleFiles) {
             # Add a file to the list of accessible files.
-            Write-Verbose "[Adding Accessible File]"
-            Write-Verbose "Adding $(ConvertTo-EnvironmentPath -Path $file.Path)"
+            Write-Verbose "[Adding Accessible File] $(ConvertTo-EnvironmentPath -Path $file.Path)"
             $AccessibleFile = $Configuration.CreateInstanceFromClassName("AM.File")
             $AccessibleFile.Path = $(ConvertTo-EnvironmentPath -Path $file.Path)
             $AccessibleFile.CommandLine = $(ConvertTo-EnvironmentPath -Path $file.Path)
-            $AccessibleFile.Description = $file.Description
-            $AccessibleFile.Metadata.CompanyName = $file.Company
-            $AccessibleFile.Metadata.CompanyNameEnabled = $True
-            $AccessibleFile.Metadata.ProductName = $file.Product
-            $AccessibleFile.Metadata.ProductNameEnabled = $True
-            $AccessibleFile.Metadata.FileDescription = $file.Description
-            $AccessibleFile.Metadata.FileDescriptionEnabled = $True  
+            If ($file.Company) {
+                $AccessibleFile.Metadata.CompanyName = $file.Company
+                $AccessibleFile.Metadata.CompanyNameEnabled = $True
+            } Else {
+                $AccessibleFile.Metadata.CompanyNameEnabled = $False
+            }
+            If ($file.Product) {
+                $AccessibleFile.Metadata.ProductName = $file.Product
+                $AccessibleFile.Metadata.ProductNameEnabled = $True
+            } Else {
+                $AccessibleFile.Metadata.ProductNameEnabled = $False
+            }
+            If ($file.Description) {
+                $AccessibleFile.Description = $file.Description
+                $AccessibleFile.Metadata.FileDescription = $file.Description
+                $AccessibleFile.Metadata.FileDescriptionEnabled = $True
+            } Else {
+                $AccessibleFile.Description = "[No metadata found]"
+                $AccessibleFile.Metadata.FileDescriptionEnabled = $False
+            }  
             $Configuration.GroupRules.Item($GroupRule).AccessibleFiles.Add($AccessibleFile.Xml()) | Out-Null
-            Remove-Variable AccessibleFile
         }
     }
 
     If ($PSBoundParameters.ContainsKey('AccessibleFolders')) {
-        ForEach ($folder in $AccessibleFolders) {
+        ForEach ($file in $AccessibleFolders) {
             # Add a file to the list of accessible files.
-            Write-Verbose "[Adding Accessible Folder]"
-            $FolderPath = Split-Path -Path $folder.Path -Parent
-            Write-Verbose "Adding $(ConvertTo-EnvironmentPath -Path $FolderPath)"
+            $FolderPath = Split-Path -Path $file.Path -Parent
+            Write-Verbose "[Adding Accessible Folder] $(ConvertTo-EnvironmentPath -Path $FolderPath)"
             $AccessibleFolder = $Configuration.CreateInstanceFromClassName("AM.Folder")
             $AccessibleFolder.ItemKey = $(ConvertTo-EnvironmentPath -Path $FolderPath)
             $AccessibleFolder.Path = $(ConvertTo-EnvironmentPath -Path $FolderPath)
             $AccessibleFolder.Recursive = $True
-            $AccessibleFolder.Description = $folder.Description
-            $AccessibleFolder.Metadata.CompanyName = $folder.Company
-            $AccessibleFolder.Metadata.CompanyNameEnabled = $True
-            $AccessibleFolder.Metadata.ProductName = $folder.Product
-            $AccessibleFolder.Metadata.ProductNameEnabled = $True
-            $AccessibleFolder.Metadata.FileDescription = $folder.Description
-            $AccessibleFolder.Metadata.FileDescriptionEnabled = $True
-            $AccessibleFolder = $Configuration.GroupRules.Item($GroupRule).AccessibleFolders.Add($AccessibleFolder.Xml())
+            If ($file.Company) {
+                $AccessibleFolder.Metadata.CompanyName = $file.Company
+                $AccessibleFolder.Metadata.CompanyNameEnabled = $True
+            } Else {
+                $AccessibleFolder.Metadata.CompanyNameEnabled = $False
+            }
+            If ($file.Product) {
+                $AccessibleFolder.Metadata.ProductName = $file.Product
+                $AccessibleFolder.Metadata.ProductNameEnabled = $True
+            } Else {
+                $AccessibleFolder.Metadata.ProductNameEnabled = $False
+            }
+            If ($file.Description) {
+                $AccessibleFolder.Description = $file.Description
+                $AccessibleFolder.Metadata.FileDescription = $file.Description
+                $AccessibleFolder.Metadata.FileDescriptionEnabled = $True
+            } Else {
+                $AccessibleFolder.Description = "[No metadata found]"
+                $AccessibleFolder.Metadata.FileDescriptionEnabled = $False
+            }  
+            $Configuration.GroupRules.Item($GroupRule).AccessibleFolders.Add($AccessibleFolder.Xml()) | Out-Null
         }
     }
 
@@ -172,21 +195,18 @@ Process {
             # Get details from the certificate for Issuer and Subject
             # Could look at simplifying reading the certificate by using X509Certificate2 instead of AM.ConfigurationHelper.1
             $CertObj = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2
-            Write-Verbose "Reading certificate from $($File.Path)"
             $CertObj.Import($File.Path)
 
-            # Build Trusted Vendor certificate
-            Write-Verbose "Certificate: $($CertObj.Subject)"
+            # Build Trusted Vendor certificate; Add the certificate information to the configuration
+            Write-Verbose "Certificate: $($CertObj.Subject); $($dtMyDate.Value.ToShortDateString()) $($dtMyDate.Value.ToShortTimeString())"
             Write-Verbose "Issuer: $($CertObj.Issuer)"
-            Write-Verbose "Expiry: $($dtMyDate.Value.ToShortDateString()) $($dtMyDate.Value.ToShortTimeString())"
             $DigitalCertificate = $Configuration.CreateInstanceFromClassName("AM.DigitalCertificate")
             $DigitalCertificate.RawCertificateData = $CertificateData
-            $DigitalCertificate.Description = $CertObj.Issuer -replace $FindCN, '$1'
+            $DigitalCertificate.Description = "Issuer: $($CertObj.Issuer -replace $FindCN, '$1'). Thumbprint: $($CertObj.Thumbprint)"
             $DigitalCertificate.IssuedTo = $CertObj.Subject -replace $FindCN, '$1'
             $DigitalCertificate.ExpiryDate = "$($dtMyDate.Value.ToShortDateString()) $($dtMyDate.Value.ToShortTimeString())"
-
-            # Add the certificate information to the configuration
-            $DigitalCertificate = $Configuration.GroupRules.Item($GroupRule).TrustedVendors.Add($DigitalCertificate.Xml())
+            $DigitalCertificate.ErrorIgnoreFlags = 256     # Enable 'Ignore end Certificate revocation errors'
+            $Configuration.GroupRules.Item($GroupRule).TrustedVendors.Add($DigitalCertificate.Xml()) | Out-Null
         }
     }
 }
