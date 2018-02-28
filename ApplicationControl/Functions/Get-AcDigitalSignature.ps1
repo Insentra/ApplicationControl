@@ -1,3 +1,4 @@
+# Requires -Version 3
 Function Get-AcDigitalSignature {
     <#
         .SYNOPSIS
@@ -35,25 +36,24 @@ Function Get-AcDigitalSignature {
             The script will return an object that can be used on the pipeline; however, use -Gridview output directly to an interactive table in a separate window.
 
         .EXAMPLE
-            .\Get-DigitalSignatures.ps1 -Path "C:\Users\aaron\AppData\Local\GitHubDesktop"
+            Get-DigitalSignatures -Path "C:\Users\aaron\AppData\Local\GitHubDesktop"
 
             Description:
             Scans the folder specified in the Path variable and returns the digital signatures for each file.
 
         .EXAMPLE
-            .\Get-DigitalSignatures.ps1 -Path "C:\Users\aaron\AppData\Local\GitHubDesktop" -Export C:\Temp
+            Get-DigitalSignature -Path "C:\Users\aaron\AppData\Local\GitHubDesktop" -Export C:\Temp
 
             Description:
             Scans the folder specified in the Path variable and returns the digital signatures for each file.
             A .P7B certificate file will be exported for each unique certificate and stored in the C:\Temp folder
 
         .EXAMPLE
-            .\Get-DigitalSignatures.ps1 -Path "C:\Users\aaron\AppData\Local\GitHubDesktop" -Unique
+            Get-DigitalSignatures -Path "C:\Users\aaron\AppData\Local\GitHubDesktop" -Unique
 
             Description:
             Scans the folder specified in the Path variable and returns the digital signatures for only the first file with a unique certificate.
 #>
-    # Requires -Version 3
     [CmdletBinding(SupportsShouldProcess = $False, DefaultParameterSetName = 'Base')]
     Param (
         [Parameter(ParameterSetName = 'Base', Mandatory = $False, Position = 0, ValueFromPipeline = $True, ValueFromPipelineByPropertyName = $True, `

@@ -1,3 +1,4 @@
+# Requires -Version 3
 Function Get-AcFileMetadata {
     <#
         .SYNOPSIS
@@ -25,12 +26,11 @@ Function Get-AcFileMetadata {
             Gets only the specified items.
 
         .EXAMPLE
-            .\Get-FileMetadata.ps1 -Path "C:\Users\aaron\AppData\Local\GitHubDesktop"
+            Get-FileMetadata -Path "C:\Users\aaron\AppData\Local\GitHubDesktop"
 
             Description:
             Scans the folder specified in the Path variable and returns the metadata for each file.
 #>
-    # Requires -Version 3
     [CmdletBinding(SupportsShouldProcess = $False)]
     Param (
         [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline = $True, ValueFromPipelineByPropertyName = $True, `

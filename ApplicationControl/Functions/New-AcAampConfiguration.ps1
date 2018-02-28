@@ -1,3 +1,4 @@
+# Requires -Version 3
 Function New-AcAampConfiguration {
     <#
         .SYNOPSIS
@@ -23,18 +24,17 @@ Function New-AcAampConfiguration {
         .PARAMETER AccessibleFiles
   
         .EXAMPLE
-          .\New-AampConfiguration.ps1 -AccessibleFiles $Files -Path "C:\Temp\Configuration.aamp"
+          New-AampConfiguration -AccessibleFiles $Files -Path "C:\Temp\Configuration.aamp"
   
           Description:
           Adds files and metadata in the array $Files to a new Application Control configuration at "C:\Temp\Configuration.aamp".
 
         .EXAMPLE
-          .\New-AampConfiguration.ps1 -SignedFiles $SignedFiles -Path "C:\Temp\Configuration.aamp"
+          New-AampConfiguration -SignedFiles $SignedFiles -Path "C:\Temp\Configuration.aamp"
   
           Description:
           Adds Trusted Vendor certificates from the files in the array $SignedFiles to a new Application Control configuration at "C:\Temp\Configuration.aamp".
 #>
-    # Requires -Version 3
     [CmdletBinding(SupportsShouldProcess = $False)]
     Param (
         [Parameter(Mandatory = $False, Position = 0, ValueFromPipeline = $True, ValueFromPipelineByPropertyName = $False, `
