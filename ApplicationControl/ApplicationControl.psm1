@@ -1,5 +1,5 @@
 # Get function definition files.
-$Functions = @( Get-ChildItem -Path $PSScriptRoot\Functions\*.ps1 -ErrorAction SilentlyContinue )
+$Functions = @( Get-ChildItem -Path $PSScriptRoot\*.ps1 -ErrorAction SilentlyContinue )
 
 # Dot source the files
 ForEach ($import in $Functions) {
