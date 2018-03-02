@@ -79,22 +79,6 @@ Function Get-AcDigitalSignature {
     Begin {
         # Measure time taken to gather data
         $StopWatch = [system.diagnostics.stopwatch]::StartNew()
-
-        Function Export-P7bFile {
-            Param (
-                [string]$File,
-                [string]$Path
-            )
-            If (Get-Module -Name PKI -ErrorAction SilentlyContinue) {
-                $cert = (Get-AuthenticodeSignature $File).SignerCertificate
-                Write-Verbose "Exporting certificate: $Path\$($cert.Thumbprint).p7b"
-                Export-Certificate -Cert $cert -FilePath "$Path\$($cert.Thumbprint).p7b" -Type P7B    
-            }
-            Else {
-                Write-Verbose "Missing module PKI. Unable to export certificate."
-                $Null
-            }
-        }
         
         # Initialise $Signatures as an array
         $Signatures = @()
