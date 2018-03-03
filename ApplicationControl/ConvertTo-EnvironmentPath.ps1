@@ -20,7 +20,7 @@ Function ConvertTo-EnvironmentPath {
     Switch -Regex ($Path) {
         { $_ -match $RegExLocalAppData } { $Path = $Path -replace $RegExLocalAppData, "%LOCALAPPDATA%\" }
         { $_ -match $RegExAppData } { $Path = $Path -replace $RegExAppData, "%APPDATA%\" }
-        { $_ -match $RegExTemp } { $Path = $Path -replace $RegExRoamingAppData, "%TEMP%\" }
+        { $_ -match $RegExTemp } { $Path = $Path -replace $RegExTemp, "%TEMP%\" }
         { $_ -match $RegExProgramData } { $Path = $Path -replace $RegExProgramData, "%ProgramData%\" }
         { $_ -match $RegExProgramFiles } { $Path = $Path -replace $RegExProgramFiles, "%ProgramFiles%\" }
         { $_ -match $RegExProgramFilesx86 } { $Path = $Path -replace $RegExProgramFilesx86, "%ProgramFiles(x86)%\" }

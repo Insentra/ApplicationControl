@@ -99,7 +99,7 @@ Function Get-AcDigitalSignature {
 
                     # Target is a file, so just get metadata for the file
                     Write-Verbose "Scanning file: $Loc"
-                    $items = Get-ChildItem -Path $Loc
+                    $items = Get-Item -Path $Loc
                 }
 
                 # Get Exe and Dll files from the target path (inc. subfolders), find signatures and return certain properties in a grid view

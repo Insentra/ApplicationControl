@@ -80,7 +80,8 @@ Function New-AcAampConfiguration {
         $DigitalCertificate = $Configuration.CreateInstanceFromClassName("AM.DigitalCertificate")
 
         # RegEx to grab CN from certificates
-        $FindCN = "(?xi)(?:CN=)(.*?),.*"
+        # $FindCN = "(?xi)(?:CN=)(.*?),.*"
+        $FindCN = "(?:.*CN=)(.*?)(?:,\ O.*)"
 
         # Create default configuration
         Write-Verbose "Creating Application Control default configuration"
@@ -104,40 +105,42 @@ Function New-AcAampConfiguration {
                 If ($file.Company -gt 1) {
                     $AccessibleFile.Metadata.CompanyName = $file.Company
                     $AccessibleFile.Metadata.CompanyNameEnabled = $True
+                    $AccessibleFile.Description = $file.Company
                 } Else {
                     $AccessibleFile.Metadata.CompanyNameEnabled = $False
+                }
+                If ($file.Vendor -gt 1) {
+                    $AccessibleFile.Metadata.VendorName = $file.Vendor
+                    $AccessibleFile.Metadata.VendorNameEnabled = $True
+                    $AccessibleFile.Description = $file.Vendor
+                } Else {
+                    $AccessibleFile.Metadata.VendorNameEnabled = $False
                 }
                 If ($file.Product -gt 1) {
                     $AccessibleFile.Metadata.ProductName = $file.Product
                     $AccessibleFile.Metadata.ProductNameEnabled = $True
+                    $AccessibleFile.Description = $file.Product
                 } Else {
                     $AccessibleFile.Metadata.ProductNameEnabled = $False
                 }
                 If ($file.Description -gt 1) {
                     $AccessibleFile.Metadata.FileDescription = $file.Description
                     $AccessibleFile.Metadata.FileDescriptionEnabled = $True
+                    $AccessibleFile.Description = $file.Description
                 } Else {
                     $AccessibleFile.Metadata.FileDescriptionEnabled = $False
                 }
-
-                If ($AccessibleFile.Metadata.CompanyNameEnabled -eq $True -and $AccessibleFile.Metadata.ProductNameEnabled -eq $True `
-                        -and $AccessibleFile.Metadata.FileDescriptionEnabled -eq $True) {
-                    $AccessibleFile.Description = $file.Description
-                } ElseIf ($AccessibleFile.Metadata.CompanyNameEnabled -eq $True -and $AccessibleFile.Metadata.ProductNameEnabled -eq $True `
-                -and $AccessibleFile.Metadata.FileDescriptionEnabled -eq $False) {
-                    $AccessibleFile.Description = $file.Product
-                } ElseIf ($AccessibleFile.Metadata.CompanyNameEnabled -eq $True -and $AccessibleFile.Metadata.ProductNameEnabled -eq $False `
-                -and $AccessibleFile.Metadata.FileDescriptionEnabled -eq $False) {
-                    $AccessibleFile.Description = $file.Company
-                } Else {
+                If (!($AccessibleFile.Description)) {
                     $AccessibleFile.Description = "[No metadata found]"
                 }
 
+                # Add file to the rule and remove values from all properties ready for next file
                 $Configuration.GroupRules.Item($GroupRule).AccessibleFiles.Add($AccessibleFile.Xml()) | Out-Null
                 $AccessibleFile.Path = ""
                 $AccessibleFile.CommandLine = ""
                 $AccessibleFile.Description = ""
                 $AccessibleFile.Metadata.CompanyName = ""
+                $AccessibleFile.Metadata.VendorName = ""
                 $AccessibleFile.Metadata.ProductName = ""
                 $AccessibleFile.Metadata.FileDescription = ""
             }
@@ -203,7 +206,7 @@ Function New-AcAampConfiguration {
                 Write-Verbose "Issuer: $($CertObj.Issuer)"
                 $DigitalCertificate.RawCertificateData = $CertificateData
                 $DigitalCertificate.Description = "Issuer: $($CertObj.Issuer -replace $FindCN, '$1'). Thumbprint: $($CertObj.Thumbprint)"
-                $DigitalCertificate.IssuedTo = $CertObj.Subject -replace $FindCN, '$1'
+                $DigitalCertificate.IssuedTo = ($Cert.Subject -replace $FindCN, '$1') -replace '"', ""
                 $DigitalCertificate.ExpiryDate = "$($dtMyDate.Value.ToShortDateString()) $($dtMyDate.Value.ToShortTimeString())"
                 $DigitalCertificate.ErrorIgnoreFlags = 256     # Enable 'Ignore end Certificate revocation errors'
                 $Configuration.GroupRules.Item($GroupRule).TrustedVendors.Add($DigitalCertificate.Xml()) | Out-Null

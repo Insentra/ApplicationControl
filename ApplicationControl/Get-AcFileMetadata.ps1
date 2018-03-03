@@ -41,11 +41,18 @@ Function Get-AcFileMetadata {
         [Parameter(Mandatory = $False, Position = 1, ValueFromPipeline = $False, `
                 HelpMessage = 'Gets only the specified items.')]
         [Alias('Filter')]
-        [string[]]$Include = @('*.exe', '*.dll')
+        [string[]]$Include = @('*.exe', '*.dll'),
+
+        [Parameter(Mandatory = $False, ValueFromPipeline = $False, `
+                HelpMessage = 'Extract Vendor metadata from certificate.')]
+        [switch]$Signature
     )
     Begin {
         # Measure time taken to gather data
         $StopWatch = [system.diagnostics.stopwatch]::StartNew()
+
+        # RegEx to grab CN from certificates
+        $FindCN = "(?:.*CN=)(.*?)(?:,\ O.*)"
 
         Write-Verbose "Beginning metadata trawling."
         $Files = @()
@@ -66,7 +73,17 @@ Function Get-AcFileMetadata {
 
                     # Target is a file, so just get metadata for the file
                     Write-Verbose "Getting metadata for file: $Loc"
-                    $items = Get-ChildItem -Path $Loc
+                    $items = Get-Item -Path $Loc
+
+                    # Get signing certificate details from the target file.
+                    # Need to fix logic here for when multiple files are passed to this function
+                    If ($Signature) {
+                        $Cert = Get-AcDigitalSignature -Path $Loc
+                        $Vendor = ($Cert.Subject -replace $FindCN, '$1') -replace '"', ""
+                    }
+                    Else {
+                        $Vendor = ""
+                    }
                 }
 
                 # Create an array from what was returned for specific data and sort on file path
@@ -74,9 +91,9 @@ Function Get-AcFileMetadata {
                 @{Name = "Description"; Expression = {$_.VersionInfo.FileDescription}}, `
                 @{Name = "Product"; Expression = {$_.VersionInfo.ProductName}}, `
                 @{Name = "Company"; Expression = {$_.VersionInfo.CompanyName}}, `
+                @{Name = "Vendor"; Expression = {$Vendor}}, `
                 @{Name = "FileVersion"; Expression = {$_.VersionInfo.FileVersion}}, `
                 @{Name = "ProductVersion"; Expression = {$_.VersionInfo.ProductVersion}}
-
             }
             Else {
                 Write-Error "Path does not exist: $Loc"
