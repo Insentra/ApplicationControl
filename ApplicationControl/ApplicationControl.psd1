@@ -22,7 +22,7 @@
     Description           = 'This is a community project that is used to retreive application file metadata for creating application control / white listing rules.'
     
     # Minimum version of the Windows PowerShell engine required by this module
-    PowerShellVersion     = '4.0'
+    PowerShellVersion     = '3.0'
     
     # Name of the Windows PowerShell host required by this module
     # PowerShellHostName = ''

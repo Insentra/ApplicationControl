@@ -154,40 +154,55 @@ Function New-AcAampConfiguration {
                 $AccessibleFolder.ItemKey = $(ConvertTo-EnvironmentPath -Path $FolderPath)
                 $AccessibleFolder.Path = $(ConvertTo-EnvironmentPath -Path $FolderPath)
                 $AccessibleFolder.Recursive = $True
-                If ($file.Company) {
+                $AccessibleFolder.TrustedOwnershipChecking = $False
+                If ($file.Company -gt 1) {
                     $AccessibleFolder.Metadata.CompanyName = $file.Company
                     $AccessibleFolder.Metadata.CompanyNameEnabled = $True
+                    $AccessibleFolder.Description = $file.Company
                 }
                 Else {
                     $AccessibleFolder.Metadata.CompanyNameEnabled = $False
                 }
-                If ($file.Product) {
+                If ($file.Vendor -gt 1) {
+                    $AccessibleFolder.Metadata.VendorName = $file.Vendor
+                    $AccessibleFolder.Metadata.VendorNameEnabled = $True
+                    $AccessibleFolder.Description = $file.Vendor
+                } Else {
+                    $AccessibleFile.Metadata.VendorNameEnabled = $False
+                }
+                If ($file.Product -gt 1) {
                     $AccessibleFolder.Metadata.ProductName = $file.Product
                     $AccessibleFolder.Metadata.ProductNameEnabled = $True
+                    $AccessibleFolder.Description = $file.Product
                 }
                 Else {
                     $AccessibleFolder.Metadata.ProductNameEnabled = $False
                 }
-                If ($file.Description) {
-                    $AccessibleFolder.Description = $file.Description
+                If ($file.Description -gt 1) {
                     $AccessibleFolder.Metadata.FileDescription = $file.Description
                     $AccessibleFolder.Metadata.FileDescriptionEnabled = $True
+                    $AccessibleFolder.Description = $file.Description
                 }
                 Else {
-                    $AccessibleFolder.Description = "[No metadata found]"
                     $AccessibleFolder.Metadata.FileDescriptionEnabled = $False
-                }  
+                } 
+                If (!($AccessibleFolder.Description)) {
+                    $AccessibleFolder.Description = "[No metadata found]"
+                }
+                
+                # Add folder to the rule and remove values from all properties ready for next file
                 $Configuration.GroupRules.Item($GroupRule).AccessibleFolders.Add($AccessibleFolder.Xml()) | Out-Null
                 $AccessibleFolder.Path = ""
                 $AccessibleFolder.ItemKey = ""
                 $AccessibleFolder.Description = ""
                 $AccessibleFolder.Metadata.CompanyName = ""
                 $AccessibleFolder.Metadata.ProductName = ""
+                $AccessibleFolder.Metadata.VendorName = ""
                 $AccessibleFolder.Metadata.FileDescription = ""
             }
         }
 
-        If ($PSBoundParameters.ContainsKey('SignedFiles')) {
+        If ($PSBoundParameters.ContainsKey('TrustedVendors')) {
             ForEach ($File in $TrustedVendors) {
                 # Adding Trusted Vendors
                 Write-Verbose "[Adding Trusted Vendor]"
@@ -206,7 +221,7 @@ Function New-AcAampConfiguration {
                 Write-Verbose "Issuer: $($CertObj.Issuer)"
                 $DigitalCertificate.RawCertificateData = $CertificateData
                 $DigitalCertificate.Description = "Issuer: $($CertObj.Issuer -replace $FindCN, '$1'). Thumbprint: $($CertObj.Thumbprint)"
-                $DigitalCertificate.IssuedTo = ($Cert.Subject -replace $FindCN, '$1') -replace '"', ""
+                $DigitalCertificate.IssuedTo = ($CertObj.Subject -replace $FindCN, '$1') -replace '"', ""
                 $DigitalCertificate.ExpiryDate = "$($dtMyDate.Value.ToShortDateString()) $($dtMyDate.Value.ToShortTimeString())"
                 $DigitalCertificate.ErrorIgnoreFlags = 256     # Enable 'Ignore end Certificate revocation errors'
                 $Configuration.GroupRules.Item($GroupRule).TrustedVendors.Add($DigitalCertificate.Xml()) | Out-Null
