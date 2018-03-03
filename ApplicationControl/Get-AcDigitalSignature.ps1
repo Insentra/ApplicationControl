@@ -1,4 +1,4 @@
-# Requires -Version 3
+# Requires -Version 2
 Function Get-AcDigitalSignature {
     <#
         .SYNOPSIS

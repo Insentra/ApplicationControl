@@ -1,3 +1,4 @@
+# Requires -Version 3
 Function Export-P7bFile {
     <#
         .SYNOPSIS
