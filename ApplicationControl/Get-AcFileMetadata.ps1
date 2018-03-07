@@ -88,12 +88,12 @@ Function Get-AcFileMetadata {
 
                 # Create an array from what was returned for specific data and sort on file path
                 $Files += $items | Select-Object @{Name = "Path"; Expression = {$_.FullName}}, `
+                @{Name = "Vendor"; Expression = {$Vendor}}, `
+                @{Name = "Company"; Expression = {$_.VersionInfo.CompanyName}}, `
                 @{Name = "Description"; Expression = {$_.VersionInfo.FileDescription}}, `
                 @{Name = "Product"; Expression = {$_.VersionInfo.ProductName}}, `
-                @{Name = "Company"; Expression = {$_.VersionInfo.CompanyName}}, `
-                @{Name = "Vendor"; Expression = {$Vendor}}, `
-                @{Name = "FileVersion"; Expression = {$_.VersionInfo.FileVersion}}, `
-                @{Name = "ProductVersion"; Expression = {$_.VersionInfo.ProductVersion}}
+                @{Name = "ProductVersion"; Expression = {$_.VersionInfo.ProductVersion}}, `
+                @{Name = "FileVersion"; Expression = {$_.VersionInfo.FileVersion}}
             }
             Else {
                 Write-Error "Path does not exist: $Loc"
