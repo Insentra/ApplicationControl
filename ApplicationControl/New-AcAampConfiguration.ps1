@@ -223,7 +223,7 @@ Function New-AcAampConfiguration {
                 $DigitalCertificate.Description = "Issuer: $($CertObj.Issuer -replace $FindCN, '$1'). Thumbprint: $($CertObj.Thumbprint)"
                 $DigitalCertificate.IssuedTo = ($CertObj.Subject -replace $FindCN, '$1') -replace '"', ""
                 $DigitalCertificate.ExpiryDate = "$($dtMyDate.Value.ToShortDateString()) $($dtMyDate.Value.ToShortTimeString())"
-                $DigitalCertificate.ErrorIgnoreFlags = 256     # Enable 'Ignore end Certificate revocation errors'
+                $DigitalCertificate.ErrorIgnoreFlags = 1792     # Enable 'Ignore end Certificate revocation errors' - remove if no issue with CRL checking.
                 $Configuration.GroupRules.Item($GroupRule).TrustedVendors.Add($DigitalCertificate.Xml()) | Out-Null
             }
         }
