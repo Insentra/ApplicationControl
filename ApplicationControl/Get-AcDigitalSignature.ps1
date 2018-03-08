@@ -10,7 +10,7 @@ Function Get-AcDigitalSignature {
             Output includes files that are not signed.
 
         .NOTES
-            Name: Get-DigitalSignature.ps1
+            Name: Get-AcDigitalSignature
             Author: Aaron Parker
             Twitter: @stealthpuppy
         
@@ -26,27 +26,14 @@ Function Get-AcDigitalSignature {
         .PARAMETER Include
             Gets only the specified items.
 
-        .PARAMETER Export
-            A target path to export certificates in P7B file format to. Each file will be named for the certificte thumbprint.
-
         .PARAMETER Unique
             By default the script will return all files and their certificate details. Use -Unique to return the first listing for each unique certificate.
 
-        .PARAMETER Gridivew
-            The script will return an object that can be used on the pipeline; however, use -Gridview output directly to an interactive table in a separate window.
-
         .EXAMPLE
-            Get-DigitalSignatures -Path "C:\Users\aaron\AppData\Local\GitHubDesktop"
+            Get-AcDigitalSignatures -Path "C:\Users\aaron\AppData\Local\GitHubDesktop"
 
             Description:
             Scans the folder specified in the Path variable and returns the digital signatures for each file.
-
-        .EXAMPLE
-            Get-DigitalSignature -Path "C:\Users\aaron\AppData\Local\GitHubDesktop" -Export C:\Temp
-
-            Description:
-            Scans the folder specified in the Path variable and returns the digital signatures for each file.
-            A .P7B certificate file will be exported for each unique certificate and stored in the C:\Temp folder
 
         .EXAMPLE
             Get-DigitalSignatures -Path "C:\Users\aaron\AppData\Local\GitHubDesktop" -Unique
@@ -54,9 +41,9 @@ Function Get-AcDigitalSignature {
             Description:
             Scans the folder specified in the Path variable and returns the digital signatures for only the first file with a unique certificate.
 #>
-    [CmdletBinding(SupportsShouldProcess = $False, DefaultParameterSetName = 'Base')]
+    [CmdletBinding(SupportsShouldProcess = $False)]
     Param (
-        [Parameter(ParameterSetName = 'Base', Mandatory = $False, Position = 0, ValueFromPipeline = $True, ValueFromPipelineByPropertyName = $True, `
+        [Parameter(Mandatory = $False, Position = 0, ValueFromPipeline = $True, ValueFromPipelineByPropertyName = $True, `
                 HelpMessage = 'Specify a target path in which to scan files for digital signatures.')]
         [Alias('FullName', 'PSPath')]
         [string[]]$Path,
@@ -66,15 +53,8 @@ Function Get-AcDigitalSignature {
         [Alias('Filter')]
         [string[]]$Include = @('*.exe', '*.dll'),
 
-        [Parameter(ParameterSetName = 'Base', Mandatory = $False, HelpMessage = 'Export certificates to files in a specific folder.')]
-        [ValidateScript( { If (Test-Path $_ -PathType 'Container') { $True } Else { Throw "Cannot find output path $_" } })]
-        [string]$Export,
-
         [Parameter(ParameterSetName = 'Base', Mandatory = $False)]
-        [switch]$Unique,
-
-        [Parameter(ParameterSetName = 'Base', Mandatory = $False)]
-        [switch]$Gridview
+        [switch]$Unique
     )
     Begin {
         # Measure time taken to gather data
@@ -127,20 +107,9 @@ Function Get-AcDigitalSignature {
             Write-Verbose "$($Signatures.Count) unique signature/s found in $Path"
         }
 
-        # Output the a P7b certificate file for each unique certificate found from files in the folder
-        If ($Export) {
-            Write-Verbose "Exporting certificate P7B files to $Export."
-            ForEach ( $file in $Signatures.Path ) {
-                Export-P7bFile -File $file -Path $Export | Out-Null
-            } 
-        }
-
-        # If Gridview switch specified, output to a Grid View
-        If ($Gridview) { $Signatures | Out-GridView -Title "Digital Signatures: $Path" }
-
         # Return output
         $StopWatch.Stop()
         Write-Verbose "Digital signature trawling complete. Script took $($StopWatch.Elapsed.TotalMilliseconds) ms to complete."
-        Return $Signatures | Sort-Object -Property Thumbprint
+        $Signatures | Sort-Object -Property Thumbprint, Path
     }
 }

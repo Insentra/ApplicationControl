@@ -58,7 +58,8 @@
     # NestedModules = @()
     
     # Functions to export from this module
-    FunctionsToExport     = @('Get-AcFileMetadata', 'Get-AcDigitalSignature', 'New-AcAampConfiguration', 'Export-P7bFile', 'ConvertTo-EnvironmentPath', 'Select-AcUniqueMetadata')
+    FunctionsToExport     = @('Get-AcFileMetadata', 'Get-AcDigitalSignature', 'New-AcAampConfiguration', 'Export-AcDigitalSignature', `
+                                'ConvertTo-EnvironmentPath', 'Select-AcUniqueMetadata')
     
     # Cmdlets to export from this module
     CmdletsToExport       = @()
