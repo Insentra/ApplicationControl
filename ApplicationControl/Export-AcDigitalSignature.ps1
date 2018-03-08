@@ -59,6 +59,7 @@ Function Export-AcDigitalSignature {
         Else {
             Throw "Missing module PKI. Unable to export certificate."
         }
+        $Output = @()
     }
     Process {
         # Output the a P7b certificate file for each unique certificate found from files in the folder
@@ -67,9 +68,11 @@ Function Export-AcDigitalSignature {
             Write-Verbose "Getting certificate from $File."
             $cert = (Get-AuthenticodeSignature $File).SignerCertificate
             Write-Verbose "Exporting certificate: $Destination\$($cert.Thumbprint).p7b"
-            Export-Certificate -Cert $cert -FilePath "$Destination\$($cert.Thumbprint).p7b" -Type P7B    
+            Export-Certificate -Cert $cert -FilePath "$Destination\$($cert.Thumbprint).p7b" -Type P7B
+            $Output += "$Destination\$($cert.Thumbprint).p7b"
         } 
     }
     End {
+        $Output
     }
 }
