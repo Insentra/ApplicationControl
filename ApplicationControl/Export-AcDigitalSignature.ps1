@@ -48,16 +48,15 @@ Function Export-AcDigitalSignature {
     )
     Begin {
         Write-Verbose "Importing module PKI."
-        If (Get-Module -Name PKI -ErrorAction SilentlyContinue) {
+        If (Get-Module -ListAvailable PKI -ErrorAction SilentlyContinue) {
             Try {
                 Import-Module -Name PKI -ErrorAction SilentlyContinue
             }
             Catch {
                 Throw "Unable to import module PKI."
             }
-        }
-        Else {
-            Throw "Missing module PKI. Unable to export certificate."
+        } Else {
+            Throw "Unable to find required module PKI"
         }
         $Output = @()
     }
@@ -68,7 +67,7 @@ Function Export-AcDigitalSignature {
             Write-Verbose "Getting certificate from $File."
             $cert = (Get-AuthenticodeSignature $File).SignerCertificate
             Write-Verbose "Exporting certificate: $Destination\$($cert.Thumbprint).p7b"
-            Export-Certificate -Cert $cert -FilePath "$Destination\$($cert.Thumbprint).p7b" -Type P7B
+            Export-Certificate -Cert $cert -FilePath "$Destination\$($cert.Thumbprint).p7b" -Type P7B | Out-Null
             $Output += "$Destination\$($cert.Thumbprint).p7b"
         } 
     }
