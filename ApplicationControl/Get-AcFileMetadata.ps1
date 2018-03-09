@@ -41,11 +41,7 @@ Function Get-AcFileMetadata {
         [Parameter(Mandatory = $False, Position = 1, ValueFromPipeline = $False, `
                 HelpMessage = 'Gets only the specified items.')]
         [Alias('Filter')]
-        [string[]]$Include = @('*.exe', '*.dll'),
-
-        [Parameter(Mandatory = $False, ValueFromPipeline = $False, `
-                HelpMessage = 'Extract Vendor metadata from certificate.')]
-        [switch]$Signature
+        [string[]]$Include = @('*.exe', '*.dll')
     )
     Begin {
         # Measure time taken to gather data
@@ -61,34 +57,21 @@ Function Get-AcFileMetadata {
         # For each path in $Path, check that the path exists
         ForEach ($Loc in $Path) {
             If (Test-Path -Path $Loc -IsValid) {
-
                 # Get the item to determine whether it's a file or folder
                 If ((Get-Item -Path $Loc).PSIsContainer) {
-
                     # Target is a folder, so trawl the folder for .exe and .dll files in the target and sub-folders
                     Write-Verbose "Getting metadata for files in folder: $Loc"
                     $items = Get-ChildItem -Path $Loc -Recurse -Include $Include
                 }
                 Else {
-
                     # Target is a file, so just get metadata for the file
                     Write-Verbose "Getting metadata for file: $Loc"
                     $items = Get-Item -Path $Loc
-
-                    # Get signing certificate details from the target file.
-                    # Need to fix logic here for when multiple files are passed to this function
-                    If ($Signature) {
-                        $Cert = Get-AcDigitalSignature -Path $Loc
-                        $Vendor = ($Cert.Subject -replace $FindCN, '$1') -replace '"', ""
-                    }
-                    Else {
-                        $Vendor = ""
-                    }
                 }
 
                 # Create an array from what was returned for specific data and sort on file path
                 $Files += $items | Select-Object @{Name = "Path"; Expression = {$_.FullName}}, `
-                @{Name = "Vendor"; Expression = {$Vendor}}, `
+                @{Name = "Vendor"; Expression = {$(((Get-AcDigitalSignature -Path $_ -ErrorAction SilentlyContinue).Subject -replace $FindCN, '$1') -replace '"', "")}}, `
                 @{Name = "Company"; Expression = {$_.VersionInfo.CompanyName}}, `
                 @{Name = "Description"; Expression = {$_.VersionInfo.FileDescription}}, `
                 @{Name = "Product"; Expression = {$_.VersionInfo.ProductName}}, `
