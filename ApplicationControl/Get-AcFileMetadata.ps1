@@ -71,6 +71,7 @@ Function Get-AcFileMetadata {
 
                 # Create an array from what was returned for specific data and sort on file path
                 $Files += $items | Select-Object @{Name = "Path"; Expression = {$_.FullName}}, `
+                @{Name = "Owner"; Expression = {(Get-Acl -Path $_.FullName).Owner}}, `
                 @{Name = "Vendor"; Expression = {$(((Get-AcDigitalSignature -Path $_ -ErrorAction SilentlyContinue).Subject -replace $FindCN, '$1') -replace '"', "")}}, `
                 @{Name = "Company"; Expression = {$_.VersionInfo.CompanyName}}, `
                 @{Name = "Description"; Expression = {$_.VersionInfo.FileDescription}}, `
