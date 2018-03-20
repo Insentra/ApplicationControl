@@ -8,12 +8,11 @@ Function Select-AcUniqueMetadata {
             Filters the output from Get-AcFileMetaData for files with unique metadata, filtering on Company, Product and Description.
         
         .NOTES
-            Name: Select-AcUniqueMetadata
             Author: Aaron Parker
             Twitter: @stealthpuppy
   
         .LINK
-            https://stealthpuppy.com
+            https://github.com/Insentra/ApplicationControl
   
         .OUTPUTS
             System.Array

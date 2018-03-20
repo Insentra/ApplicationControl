@@ -8,12 +8,11 @@ Function Export-AcDigitalSignature {
             Exports a digital signature certificate from a signed file to a specified folder.
 
         .NOTES
-            Name: Export-AcDigitalSignature
             Author: Aaron Parker
             Twitter: @stealthpuppy
         
         .LINK
-            https://stealthpuppy.com
+            https://github.com/Insentra/ApplicationControl
 
         .OUTPUTS
             [System.Array]

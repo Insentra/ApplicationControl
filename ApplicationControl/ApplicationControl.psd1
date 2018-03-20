@@ -85,7 +85,7 @@
         PSData = @{
     
             # Tags applied to this module. These help with module discovery in online galleries.
-            Tags       = 'Digital Signatures', 'Certificates', 'Metadata', 'Ivanti', 'Ivanti Application Control', 'AppLocker'
+            Tags       = 'Certificates', 'Metadata', 'Ivanti', 'ApplicationControl', 'AppLocker'
     
             # A URL to the license for this module.
             LicenseUri = 'https://github.com/aaronparker/ApplicationControl/blob/master/LICENSE'

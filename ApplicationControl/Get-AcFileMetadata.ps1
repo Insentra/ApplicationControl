@@ -9,12 +9,11 @@ Function Get-AcFileMetadata {
             Useful for understanding application files and identifying metadata stored in them. Enables the administrator to view metadata for application control scenarios.
 
         .NOTES
-            Name: Get-FileMetadata.ps1
             Author: Aaron Parker
             Twitter: @stealthpuppy
         
         .LINK
-            https://stealthpuppy.com
+            https://github.com/Insentra/ApplicationControl
 
         .OUTPUTS
             [System.Array]

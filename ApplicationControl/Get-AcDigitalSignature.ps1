@@ -10,12 +10,11 @@ Function Get-AcDigitalSignature {
             Output includes files that are not signed.
 
         .NOTES
-            Name: Get-AcDigitalSignature
             Author: Aaron Parker
             Twitter: @stealthpuppy
         
         .LINK
-            https://stealthpuppy.com
+            https://github.com/Insentra/ApplicationControl
 
         .OUTPUTS
             [System.Array]

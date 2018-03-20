@@ -11,17 +11,29 @@ Function New-AcAampConfiguration {
           Adds Accessible files and Accessible folders with metadata and Trusted Vendor certificates to the Everyone group rule.
   
         .NOTES
-          Name: New-AampConfiguration.ps1
           Author: Aaron Parker
           Twitter: @stealthpuppy
   
         .LINK
-          http://stealthpuppy.com
+          https://github.com/Insentra/ApplicationControl
   
         .OUTPUTS
           [System.String]
   
         .PARAMETER AccessibleFiles
+            An array of files with metadata to add to the Allowed list.
+
+        .PARAMETER TrustedVendors
+            An array of signed files for extracting the certificate to add to the Trusted Vendors list.
+        
+        .PARAMETER RegEx
+            For AccessibleFiles, treat the paths as RegEx.
+
+        .PARAMETER GroupRule
+            The Group rule to add the AccessibleFiles and TrustedVendors to. Defaults to Everyone.
+
+        .PARAMETER Path
+            A full file path to output the temporary Application Control configuration to. Defaults to C:\Temp\Configuration.aamp
   
         .EXAMPLE
           New-AampConfiguration -AccessibleFiles $Files -Path "C:\Temp\Configuration.aamp"
@@ -30,7 +42,13 @@ Function New-AcAampConfiguration {
           Adds files and metadata in the array $Files to a new Application Control configuration at "C:\Temp\Configuration.aamp".
 
         .EXAMPLE
-          New-AampConfiguration -SignedFiles $SignedFiles -Path "C:\Temp\Configuration.aamp"
+          New-AampConfiguration -AccessibleFiles $Files -RegEx
+  
+          Description:
+          Adds files and metadata in the array $Files to a new Application Control configuration at the default path of "C:\Temp\Configuration.aamp". With file paths treated as RegEx.
+
+        .EXAMPLE
+          New-AampConfiguration -TrustedVendors $SignedFiles -Path "C:\Temp\Configuration.aamp"
   
           Description:
           Adds Trusted Vendor certificates from the files in the array $SignedFiles to a new Application Control configuration at "C:\Temp\Configuration.aamp".
@@ -41,9 +59,9 @@ Function New-AcAampConfiguration {
                 HelpMessage = 'Specify the array of accessible files with metadata to add.')]
         [array]$AccessibleFiles,
 
-        [Parameter(Mandatory = $False, Position = 1, ValueFromPipeline = $False, ValueFromPipelineByPropertyName = $False, `
+        <#[Parameter(Mandatory = $False, Position = 1, ValueFromPipeline = $False, ValueFromPipelineByPropertyName = $False, `
                 HelpMessage = 'Specify the array of accessible folders with metadata to add.')]
-        [array]$AccessibleFolders,
+        [array]$AccessibleFolders,#>
 
         [Parameter(Mandatory = $False, Position = 2, ValueFromPipeline = $False, ValueFromPipelineByPropertyName = $False, `
                 HelpMessage = 'Specify a target file or files that have been signed.')]
@@ -151,7 +169,8 @@ Function New-AcAampConfiguration {
             }
         }
 
-        If ($PSBoundParameters.ContainsKey('AccessibleFolders')) {
+        # Disabled until adding multiple folders with the same path can be fixed
+        <#If ($PSBoundParameters.ContainsKey('AccessibleFolders')) {
             ForEach ($file in $AccessibleFolders) {
                 # Add a file to the list of accessible files.
                 $FolderPath = Split-Path -Path $file.Path -Parent
@@ -206,7 +225,7 @@ Function New-AcAampConfiguration {
                 $AccessibleFolder.Metadata.VendorName = ""
                 $AccessibleFolder.Metadata.FileDescription = ""
             }
-        }
+        }#>
 
         If ($PSBoundParameters.ContainsKey('TrustedVendors')) {
             ForEach ($File in $TrustedVendors) {
