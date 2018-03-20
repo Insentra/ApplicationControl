@@ -122,8 +122,12 @@ Function New-AcAampConfiguration {
                 # Add a file to the list of accessible files.
                 Write-Verbose "[Adding Accessible File] $(ConvertTo-EnvironmentPath -Path $file.Path)"
                 $AccessibleFile.Path = $(ConvertTo-EnvironmentPath -Path $file.Path)
-                If ($RegEx) { $AccessibleFile.UseRegularExpression = $True}
-                $AccessibleFile.CommandLine = $(ConvertTo-EnvironmentPath -Path $file.Path)
+                If ($RegEx) {
+                    $AccessibleFile.UseRegularExpression = $True
+                    $AccessibleFile.CommandLine = "$($file.Path) $(([guid]::NewGuid()).ToString())"
+                } Else {
+                    $AccessibleFile.CommandLine = $(ConvertTo-EnvironmentPath -Path $file.Path)
+                }
                 $AccessibleFile.TrustedOwnershipChecking = $False
                 If ($file.Company -gt 1) {
                     $AccessibleFile.Metadata.CompanyName = $file.Company
