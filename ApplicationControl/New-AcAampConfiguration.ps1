@@ -49,6 +49,10 @@ Function New-AcAampConfiguration {
                 HelpMessage = 'Specify a target file or files that have been signed.')]
         [array]$TrustedVendors,
 
+        [Parameter(Mandatory = $False, ValueFromPipeline = $False, ValueFromPipelineByPropertyName = $False, `
+                HelpMessage = 'Treat paths as RegEx.')]
+        [switch]$RegEx,
+
         [Parameter(Mandatory = $False, Position = 3, ValueFromPipeline = $False, ValueFromPipelineByPropertyName = $False, `
                 HelpMessage = 'Specify the rule name to add the items to.')]
         [string]$GroupRule = "Everyone",
@@ -100,6 +104,7 @@ Function New-AcAampConfiguration {
                 # Add a file to the list of accessible files.
                 Write-Verbose "[Adding Accessible File] $(ConvertTo-EnvironmentPath -Path $file.Path)"
                 $AccessibleFile.Path = $(ConvertTo-EnvironmentPath -Path $file.Path)
+                If ($RegEx) { $AccessibleFile.UseRegularExpression = $True}
                 $AccessibleFile.CommandLine = $(ConvertTo-EnvironmentPath -Path $file.Path)
                 $AccessibleFile.TrustedOwnershipChecking = $False
                 If ($file.Company -gt 1) {
@@ -153,6 +158,7 @@ Function New-AcAampConfiguration {
                 Write-Verbose "[Adding Accessible Folder] $(ConvertTo-EnvironmentPath -Path $FolderPath)"
                 $AccessibleFolder.ItemKey = $(ConvertTo-EnvironmentPath -Path $FolderPath)
                 $AccessibleFolder.Path = $(ConvertTo-EnvironmentPath -Path $FolderPath)
+                If ($RegEx) { $AccessibleFolder.UseRegularExpression -eq $True}
                 $AccessibleFolder.Recursive = $True
                 $AccessibleFolder.TrustedOwnershipChecking = $False
                 If ($file.Company -gt 1) {

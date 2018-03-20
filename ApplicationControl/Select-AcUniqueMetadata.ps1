@@ -18,7 +18,7 @@ Function Select-AcUniqueMetadata {
         .OUTPUTS
             System.Array
   
-        .PARAMETER Files
+        .PARAMETER FileList
             An array of files with metadata returned from Get-AcFileMetadata
   
         .EXAMPLE
@@ -26,24 +26,24 @@ Function Select-AcUniqueMetadata {
   
             Description:
             Filters the list of files and metadata trawled from "C:\Users\Aaron\AppData\Local\Microsoft\Teams" by passing it to Select-AcUniqueMetadata
-#>
+    #>
     [CmdletBinding(SupportsShouldProcess = $False)]
     Param (
-        [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline = $True, `
+        [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline = $False, `
                 HelpMessage = 'Provide an array of files with metadata.')]
         [ValidateNotNullOrEmpty()]
-        [array]$Files
+        [array]$FileList
     )
     Begin {
         # Initiate an array to return on the pipeline
-        $Output = @()
+        $Output = @()        
     }
     Process {
         # Filter the array via Company first (the most likely unique property) and then Product and Description
-        ForEach ($Company in ($Files | Sort-Object -Property Company -Descending | Group-Object -Property Company)) {
-            ForEach ($Group in ($Company.Group | Group-Object Product, Description)) {
-                $Output += $Group.Group | Select-Object -Unique
-            }
+        $Company = $FileList | Sort-Object -Property Company -Descending | Group-Object -Property Company
+        $Group = $Company.Group | Sort-Object -Property Product -Descending | Group-Object Product, Description
+        For ($i = 0; $i -le ($Group.Count - 1); $i++) {
+            $Output += $Group[$i].Group | Select-Object -First 1
         }
     }
     End {
