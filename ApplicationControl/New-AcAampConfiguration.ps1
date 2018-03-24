@@ -1,4 +1,3 @@
-# Requires -Version 2
 Function New-AcAampConfiguration {
     <#
         .SYNOPSIS
@@ -55,8 +54,9 @@ Function New-AcAampConfiguration {
   
           Description:
           Adds Trusted Vendor certificates from the files in the array $SignedFiles to a new Application Control configuration at "C:\Temp\Configuration.aamp".
-#>
-    [CmdletBinding(SupportsShouldProcess = $False)]
+    #>
+    [CmdletBinding(SupportsShouldProcess = $True)]
+    [OutputType([String])]
     Param (
         [Parameter(Mandatory = $False, Position = 0, ValueFromPipeline = $True, ValueFromPipelineByPropertyName = $False, `
                 HelpMessage = 'Specify the array of accessible files with metadata to add.')]
@@ -215,8 +215,9 @@ Function New-AcAampConfiguration {
     End {
         # Save the configuration and output the path to it
         If (!(Test-Path -Path (Split-Path -Path $Path -Parent))) {
-            Write-Verbose "Creating folder $(Split-Path -Path $Path -Parent)"
-            New-Item -Path (Split-Path -Path $Path -Parent) -ItemType Directory | Out-Null
+            If ($pscmdlet.ShouldProcess((Split-Path -Path $Path -Parent), "Create folder")) {
+                New-Item -Path (Split-Path -Path $Path -Parent) -ItemType Directory | Out-Null
+            }
         }
         Write-Verbose "Saving configuration to: $Path"
         $ConfigurationHelper.SaveLocalConfiguration($Path, $Configuration.Xml())

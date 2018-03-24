@@ -1,4 +1,3 @@
-# Requires -Version 3
 Function Export-AcDigitalSignature {
     <#
         .SYNOPSIS
@@ -34,7 +33,9 @@ Function Export-AcDigitalSignature {
 
             Description:
             Exports all of the unique digital certificates from "C:\Users\aaron\AppData\Local\GitHubDesktop" to C:\Temp.
-#>
+    #>
+    [CmdletBinding(SupportsShouldProcess = $False)]
+    [OutputType([Array])]
     Param (
         [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline = $True, ValueFromPipelineByPropertyName = $True, `
                 HelpMessage = 'An array of signed files from which to extract the certificates.')]

@@ -1,4 +1,3 @@
-# Requires -Version 2
 Function Select-AcUniqueMetadata {
     <#
         .SYNOPSIS
@@ -27,6 +26,7 @@ Function Select-AcUniqueMetadata {
             Filters the list of files and metadata trawled from "C:\Users\Aaron\AppData\Local\Microsoft\Teams" by passing it to Select-AcUniqueMetadata
     #>
     [CmdletBinding(SupportsShouldProcess = $False)]
+    [OutputType([Array])]
     Param (
         [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline = $False, `
                 HelpMessage = 'Provide an array of files with metadata.')]

@@ -4,6 +4,8 @@ Function ConvertTo-EnvironmentPath {
         Replaces strings in a file path with environment variables.
         Internal ApplicationControl function
     #>
+    [CmdletBinding(SupportsShouldProcess = $False)]
+    [OutputType([String])]
     Param (
         [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline = $False)]
         [string]$Path

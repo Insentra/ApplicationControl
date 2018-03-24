@@ -1,4 +1,3 @@
-# Requires -Version 2
 Function Get-AcDigitalSignature {
     <#
         .SYNOPSIS
@@ -39,8 +38,9 @@ Function Get-AcDigitalSignature {
 
             Description:
             Scans the folder specified in the Path variable and returns the digital signatures for only the first file with a unique certificate.
-#>
+    #>
     [CmdletBinding(SupportsShouldProcess = $False)]
+    [OutputType([Array])]
     Param (
         [Parameter(Mandatory = $False, Position = 0, ValueFromPipeline = $True, ValueFromPipelineByPropertyName = $True, `
                 HelpMessage = 'Specify a target path in which to scan files for digital signatures.')]

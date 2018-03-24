@@ -1,4 +1,3 @@
-# Requires -Version 2
 Function Get-AcFileMetadata {
     <#
         .SYNOPSIS
@@ -29,8 +28,9 @@ Function Get-AcFileMetadata {
 
             Description:
             Scans the folder specified in the Path variable and returns the metadata for each file.
-#>
+    #>
     [CmdletBinding(SupportsShouldProcess = $False)]
+    [OutputType([Array])]
     Param (
         [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline = $True, ValueFromPipelineByPropertyName = $True, `
                 HelpMessage = 'Specify a target path, paths or a list of files to scan for metadata.')]
