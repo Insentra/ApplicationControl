@@ -1,3 +1,8 @@
+<#
+    .SYNOPSIS
+        Sample commands for creating white listing for Ivanti Application Control.
+#>
+
 If (Get-Module ApplicationControl) { Remove-Module ApplicationControl}
 Import-Module ApplicationControl -Force -Verbose
 
@@ -21,7 +26,7 @@ Remove-Variable AppFiles, NoMetadata, Metadata, UniqueFiles, RegExFiles, Files
 $Path = "C:\Users\aaron\AppData\Local\Microsoft\Teams", "C:\Users\aaron\AppData\Local\Microsoft\TeamsMeetingAddin"
 $Files = @()
 ForEach ($Folder in $Path) {
-    $AppFiles = Get-AcFileMetadata -Verbose -Path $Folder -Include '*.exe', '*.dll', '*.ocx'
+    $AppFiles = Get-AcFileMetadata -Verbose -Path $Folder
     $NoMetadata = $AppFiles | Where-Object { $_.Vendor -le 1 -and $_.Company -le 1 -and $_.Product -le 1 -and $_.Description -le 1 }
     $Metadata = $AppFiles | Where-Object { $_.Vendor -gt 1 -or $_.Company -gt 1 -or $_.Product -gt 1 -or $_.Description -gt 1 }
     $UniqueFiles = Select-AcUniqueMetadata -FileList $Metadata -Verbose
@@ -37,7 +42,7 @@ Remove-Variable AppFiles, NoMetadata, Metadata, UniqueFiles, RegExFiles, Files
 $Path = "C:\Users\aaron\AppData\Local\Slack"
 $Files = @()
 ForEach ($Folder in $Path) {
-    $AppFiles = Get-AcFileMetadata -Verbose -Path $Folder -Include '*.exe', '*.dll', '*.ocx'
+    $AppFiles = Get-AcFileMetadata -Verbose -Path $Folder
     $NoMetadata = $AppFiles | Where-Object { $_.Vendor -le 1 -and $_.Company -le 1 -and $_.Product -le 1 -and $_.Description -le 1 }
     $Metadata = $AppFiles | Where-Object { $_.Vendor -gt 1 -or $_.Company -gt 1 -or $_.Product -gt 1 -or $_.Description -gt 1 }
     $UniqueFiles = Select-AcUniqueMetadata -FileList $Metadata -Verbose

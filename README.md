@@ -25,7 +25,9 @@ Once installation is complete, you can validate that the module exists by runnin
 
     Import-Module ApplicationControl
 
-## Example
+## Examples
+
+### Ivanti Application Control
 
 Here is an example using the module to create an Ivanti Application Control configuration for Microsoft Teams. This application uses the [Electron](https://electronjs.org/) framework and [Squirell](https://electronjs.org/docs/api/auto-updater) for in process updates, making white listing a challenge because the application installs and updates in the user profile and in the user context. This example trawls the application folders and find unique metadata to turn into an Ivanti Application Control configuration using RegEx paths to simplify the configuration as much as possible.
 
@@ -44,5 +46,4 @@ ForEach ($Folder in $Path) {
     Remove-Variable AppFiles, NoMetadata, Metadata, UniqueFiles, RegExFiles
 }
 New-AcAampConfiguration -AccessibleFiles $Files -Path C:\Temp\MicrosoftTeams.aamp -RegEx -Verbose
-Remove-Variable AppFiles, NoMetadata, Metadata, UniqueFiles, RegExFiles, Files
 ```
