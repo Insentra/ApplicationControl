@@ -4,7 +4,7 @@
     RootModule            = 'ApplicationControl.psm1'
     
     # Version number of this module.
-    ModuleVersion         = '1.0.0.29'
+    ModuleVersion         = '1.0.0.1'
     
     # ID used to uniquely identify this module
     GUID                  = '7d896252-14ea-45a1-87e0-99d6aada4348'
@@ -13,7 +13,7 @@
     Author                = 'Aaron Parker'
     
     # Company or vendor of this module
-    CompanyName           = 'stealthpuppy'
+    CompanyName           = 'Insentra Pty Ltd'
     
     # Copyright statement for this module
     Copyright             = '(c) 2018 stealthpuppy. All rights reserved.'
@@ -59,7 +59,7 @@
     
     # Functions to export from this module
     FunctionsToExport     = @('Get-AcFileMetadata', 'Get-AcDigitalSignature', 'New-AcAampConfiguration', 'Export-AcDigitalSignature', `
-                                'ConvertTo-EnvironmentPath', 'Select-AcUniqueMetadata')
+                                'ConvertTo-EnvironmentPath', 'Select-AcUniqueMetadata', 'ConvertTo-RegExPath')
     
     # Cmdlets to export from this module
     CmdletsToExport       = @()
@@ -88,16 +88,16 @@
             Tags       = 'Certificates', 'Metadata', 'Ivanti', 'ApplicationControl', 'AppLocker'
     
             # A URL to the license for this module.
-            LicenseUri = 'https://github.com/aaronparker/ApplicationControl/blob/master/LICENSE'
+            LicenseUri = 'https://github.com/Insentra/ApplicationControl/blob/master/LICENSE'
     
             # A URL to the main website for this project.
-            ProjectUri = 'https://github.com/aaronparker/ApplicationControl/'
+            ProjectUri = 'https://github.com/insentra/ApplicationControl/'
     
             # A URL to an icon representing this module.
             IconUri    = 'https://stealthpuppy.com/wp-content/uploads/2015/03/noun_17977_cc.png'
     
             # Repository location
-            RepositorySourceLocation = "https://github.com/aaronparker/ApplicationControl/"
+            RepositorySourceLocation = "https://github.com/insentra/ApplicationControl/"
             
             # ReleaseNotes of this module
             # ReleaseNotes = ''
