@@ -11,17 +11,15 @@ Write-Host "PowerShell Version:" $PSVersionTable.PSVersion.tostring()
 
 # Install the PowerShell Modules
 ForEach ($Module in $PowerShellModules) {
-    If (!(Get-Module -ListAvailable $Module -ErrorAction SilentlyContinue)) {
-        Install-Module $Module -Scope CurrentUser -Force -Repository PSGallery
-    }
-    Import-Module $Module
+    Write-Verbose "Installing module: $($Module)"
+    Install-Module $Module -Scope CurrentUser -Force -Repository PSGallery
+    Import-Module $Module -Force
 }
 
 # Install package providers for PowerShell Modules
 ForEach ($Provider in $PackageProviders) {
-    If (!(Get-PackageProvider $Provider -ErrorAction SilentlyContinue)) {
-        Install-PackageProvider $Provider -Force -ForceBootstrap -Scope CurrentUser
-    }
+    Write-Verbose "Installing provider: $($Provider)"
+    Install-PackageProvider $Provider -Force -ForceBootstrap -Scope CurrentUser
 }
 
 # Import the ApplicationControl module
