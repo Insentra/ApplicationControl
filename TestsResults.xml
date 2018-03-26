@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<test-results xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="nunit_schema_2.5.xsd" name="Pester" total="32" errors="0" failures="0" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2018-03-26" time="09:10:57">
+  <environment user="appveyor" machine-name="APPVYR-WIN" cwd="C:\projects\applicationcontrol" user-domain="APPVYR-WIN" platform="Microsoft Windows Server 2012 R2 Datacenter|C:\windows|\Device\Harddisk0\Partition5" nunit-version="2.5.8.0" os-version="6.3.9600" clr-version="4.0.30319.42000" />
+  <culture-info current-culture="en-US" current-uiculture="en-US" />
+  <test-suite type="TestFixture" name="Pester" executed="True" result="Success" success="True" time="4.6496" asserts="0" description="Pester">
+    <results>
+      <test-suite type="TestFixture" name="C:\projects\applicationcontrol\Tests\Main.Tests.ps1" executed="True" result="Success" success="True" time="4.4838" asserts="0" description="C:\projects\applicationcontrol\Tests\Main.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="General project validation" executed="True" result="Success" success="True" time="4.1553" asserts="0" description="General project validation">
+            <results>
+              <test-suite type="ParameterizedTest" name="General project validation.Script &lt;file&gt; should be valid PowerShell" executed="True" result="Success" success="True" time="0.824" asserts="0" description="Script &lt;file&gt; should be valid PowerShell">
+                <results>
+                  <test-case description="Script C:\projects\applicationcontrol\ApplicationControl\Private\ConvertTo-EnvironmentPath.ps1 should be valid PowerShell" name="General project validation.Script C:\projects\applicationcontrol\ApplicationControl\Private\ConvertTo-EnvironmentPath.ps1 should be valid PowerShell" time="0.6495" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script C:\projects\applicationcontrol\ApplicationControl\Private\ConvertTo-RegExPath.ps1 should be valid PowerShell" name="General project validation.Script C:\projects\applicationcontrol\ApplicationControl\Private\ConvertTo-RegExPath.ps1 should be valid PowerShell" time="0.091" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script C:\projects\applicationcontrol\ApplicationControl\Public\Export-AcDigitalSignature.ps1 should be valid PowerShell" name="General project validation.Script C:\projects\applicationcontrol\ApplicationControl\Public\Export-AcDigitalSignature.ps1 should be valid PowerShell" time="0.0118" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script C:\projects\applicationcontrol\ApplicationControl\Public\Get-AcDigitalSignature.ps1 should be valid PowerShell" name="General project validation.Script C:\projects\applicationcontrol\ApplicationControl\Public\Get-AcDigitalSignature.ps1 should be valid PowerShell" time="0.0141" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script C:\projects\applicationcontrol\ApplicationControl\Public\Get-AcFileMetadata.ps1 should be valid PowerShell" name="General project validation.Script C:\projects\applicationcontrol\ApplicationControl\Public\Get-AcFileMetadata.ps1 should be valid PowerShell" time="0.0109" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script C:\projects\applicationcontrol\ApplicationControl\Public\New-AcAampConfiguration.ps1 should be valid PowerShell" name="General project validation.Script C:\projects\applicationcontrol\ApplicationControl\Public\New-AcAampConfiguration.ps1 should be valid PowerShell" time="0.0243" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script C:\projects\applicationcontrol\ApplicationControl\Public\Select-AcUniqueMetadata.ps1 should be valid PowerShell" name="General project validation.Script C:\projects\applicationcontrol\ApplicationControl\Public\Select-AcUniqueMetadata.ps1 should be valid PowerShell" time="0.0111" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script C:\projects\applicationcontrol\ApplicationControl\ApplicationControl.psm1 should be valid PowerShell" name="General project validation.Script C:\projects\applicationcontrol\ApplicationControl\ApplicationControl.psm1 should be valid PowerShell" time="0.0113" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="ParameterizedTest" name="General project validation.&lt;file&gt; should pass ScriptAnalyzer" executed="True" result="Success" success="True" time="3.3313" asserts="0" description="&lt;file&gt; should pass ScriptAnalyzer">
+                <results>
+                  <test-case description="C:\projects\applicationcontrol\ApplicationControl\Private\ConvertTo-EnvironmentPath.ps1 should pass ScriptAnalyzer" name="General project validation.C:\projects\applicationcontrol\ApplicationControl\Private\ConvertTo-EnvironmentPath.ps1 should pass ScriptAnalyzer" time="0.6589" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="C:\projects\applicationcontrol\ApplicationControl\Private\ConvertTo-RegExPath.ps1 should pass ScriptAnalyzer" name="General project validation.C:\projects\applicationcontrol\ApplicationControl\Private\ConvertTo-RegExPath.ps1 should pass ScriptAnalyzer" time="0.4379" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="C:\projects\applicationcontrol\ApplicationControl\Public\Export-AcDigitalSignature.ps1 should pass ScriptAnalyzer" name="General project validation.C:\projects\applicationcontrol\ApplicationControl\Public\Export-AcDigitalSignature.ps1 should pass ScriptAnalyzer" time="0.2113" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="C:\projects\applicationcontrol\ApplicationControl\Public\Get-AcDigitalSignature.ps1 should pass ScriptAnalyzer" name="General project validation.C:\projects\applicationcontrol\ApplicationControl\Public\Get-AcDigitalSignature.ps1 should pass ScriptAnalyzer" time="0.4121" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="C:\projects\applicationcontrol\ApplicationControl\Public\Get-AcFileMetadata.ps1 should pass ScriptAnalyzer" name="General project validation.C:\projects\applicationcontrol\ApplicationControl\Public\Get-AcFileMetadata.ps1 should pass ScriptAnalyzer" time="0.1448" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="C:\projects\applicationcontrol\ApplicationControl\Public\New-AcAampConfiguration.ps1 should pass ScriptAnalyzer" name="General project validation.C:\projects\applicationcontrol\ApplicationControl\Public\New-AcAampConfiguration.ps1 should pass ScriptAnalyzer" time="1.3641" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="C:\projects\applicationcontrol\ApplicationControl\Public\Select-AcUniqueMetadata.ps1 should pass ScriptAnalyzer" name="General project validation.C:\projects\applicationcontrol\ApplicationControl\Public\Select-AcUniqueMetadata.ps1 should pass ScriptAnalyzer" time="0.0582" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="C:\projects\applicationcontrol\ApplicationControl\ApplicationControl.psm1 should pass ScriptAnalyzer" name="General project validation.C:\projects\applicationcontrol\ApplicationControl\ApplicationControl.psm1 should pass ScriptAnalyzer" time="0.044" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="Function validation" executed="True" result="Success" success="True" time="0.3286" asserts="0" description="Function validation">
+            <results>
+              <test-suite type="ParameterizedTest" name="Function validation.Script &lt;file&gt; should only contain one function" executed="True" result="Success" success="True" time="0.2208" asserts="0" description="Script &lt;file&gt; should only contain one function">
+                <results>
+                  <test-case description="Script C:\projects\applicationcontrol\ApplicationControl\Private\ConvertTo-EnvironmentPath.ps1 should only contain one function" name="Function validation.Script C:\projects\applicationcontrol\ApplicationControl\Private\ConvertTo-EnvironmentPath.ps1 should only contain one function" time="0.121" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script C:\projects\applicationcontrol\ApplicationControl\Private\ConvertTo-RegExPath.ps1 should only contain one function" name="Function validation.Script C:\projects\applicationcontrol\ApplicationControl\Private\ConvertTo-RegExPath.ps1 should only contain one function" time="0.0189" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script C:\projects\applicationcontrol\ApplicationControl\Public\Export-AcDigitalSignature.ps1 should only contain one function" name="Function validation.Script C:\projects\applicationcontrol\ApplicationControl\Public\Export-AcDigitalSignature.ps1 should only contain one function" time="0.018" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script C:\projects\applicationcontrol\ApplicationControl\Public\Get-AcDigitalSignature.ps1 should only contain one function" name="Function validation.Script C:\projects\applicationcontrol\ApplicationControl\Public\Get-AcDigitalSignature.ps1 should only contain one function" time="0.0124" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script C:\projects\applicationcontrol\ApplicationControl\Public\Get-AcFileMetadata.ps1 should only contain one function" name="Function validation.Script C:\projects\applicationcontrol\ApplicationControl\Public\Get-AcFileMetadata.ps1 should only contain one function" time="0.0143" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script C:\projects\applicationcontrol\ApplicationControl\Public\New-AcAampConfiguration.ps1 should only contain one function" name="Function validation.Script C:\projects\applicationcontrol\ApplicationControl\Public\New-AcAampConfiguration.ps1 should only contain one function" time="0.023" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script C:\projects\applicationcontrol\ApplicationControl\Public\Select-AcUniqueMetadata.ps1 should only contain one function" name="Function validation.Script C:\projects\applicationcontrol\ApplicationControl\Public\Select-AcUniqueMetadata.ps1 should only contain one function" time="0.0133" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="ParameterizedTest" name="Function validation.&lt;file&gt; should match function name" executed="True" result="Success" success="True" time="0.1078" asserts="0" description="&lt;file&gt; should match function name">
+                <results>
+                  <test-case description="C:\projects\applicationcontrol\ApplicationControl\Private\ConvertTo-EnvironmentPath.ps1 should match function name" name="Function validation.C:\projects\applicationcontrol\ApplicationControl\Private\ConvertTo-EnvironmentPath.ps1 should match function name" time="0.0278" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="C:\projects\applicationcontrol\ApplicationControl\Private\ConvertTo-RegExPath.ps1 should match function name" name="Function validation.C:\projects\applicationcontrol\ApplicationControl\Private\ConvertTo-RegExPath.ps1 should match function name" time="0.0116" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="C:\projects\applicationcontrol\ApplicationControl\Public\Export-AcDigitalSignature.ps1 should match function name" name="Function validation.C:\projects\applicationcontrol\ApplicationControl\Public\Export-AcDigitalSignature.ps1 should match function name" time="0.0152" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="C:\projects\applicationcontrol\ApplicationControl\Public\Get-AcDigitalSignature.ps1 should match function name" name="Function validation.C:\projects\applicationcontrol\ApplicationControl\Public\Get-AcDigitalSignature.ps1 should match function name" time="0.0127" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="C:\projects\applicationcontrol\ApplicationControl\Public\Get-AcFileMetadata.ps1 should match function name" name="Function validation.C:\projects\applicationcontrol\ApplicationControl\Public\Get-AcFileMetadata.ps1 should match function name" time="0.0141" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="C:\projects\applicationcontrol\ApplicationControl\Public\New-AcAampConfiguration.ps1 should match function name" name="Function validation.C:\projects\applicationcontrol\ApplicationControl\Public\New-AcAampConfiguration.ps1 should match function name" time="0.015" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="C:\projects\applicationcontrol\ApplicationControl\Public\Select-AcUniqueMetadata.ps1 should match function name" name="Function validation.C:\projects\applicationcontrol\ApplicationControl\Public\Select-AcUniqueMetadata.ps1 should match function name" time="0.0113" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\projects\applicationcontrol\Tests\Module.Tests.ps1" executed="True" result="Success" success="True" time="0.1658" asserts="0" description="C:\projects\applicationcontrol\Tests\Module.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="Module Metadata Validation" executed="True" result="Success" success="True" time="0.1658" asserts="0" description="Module Metadata Validation">
+            <results>
+              <test-case description="Script fileinfo should be OK" name="Module Metadata Validation.Script fileinfo should be OK" time="0.125" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Import module should be OK" name="Module Metadata Validation.Import module should be OK" time="0.0408" asserts="0" success="True" result="Success" executed="True" />
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+    </results>
+  </test-suite>
+</test-results>
