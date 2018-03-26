@@ -9,7 +9,6 @@ build: off
 
 # Version number
 version: 1.0.0.{build}
-os: WMF 5
 
 # There's no need to alter the build number for a Pull Request (PR) since they don't modify anything
 pull_requests:
