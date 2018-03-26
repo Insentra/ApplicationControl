@@ -1,6 +1,6 @@
 # Application Control
 
-[![Build status](https://ci.appveyor.com/api/projects/status/bq59wmi4vd8h2uvq/branch/master?svg=true)](https://ci.appveyor.com/project/aaronparker/applicationcontrol/branch/master)
+[![Build status][appveyor-badge]][appveyor-build]
 
 A module for retreiving application information for application control and white listing purposes with tools such as Ivanti Application Manager and Microsoft AppLocker.
 
@@ -45,7 +45,7 @@ ForEach ($Folder in $Path) {
 New-AcAampConfiguration -AccessibleFiles $Files -Path C:\Temp\MicrosoftTeams.aamp -RegEx -Verbose
 ```
 
-[appveyor-badge]: https://ci.appveyor.com/api/projects/status/bq59wmi4vd8h2uvq/branch/master?svg=true
+[appveyor-badge]: https://ci.appveyor.com/api/projects/status/bq59wmi4vd8h2uvq?svg=true
 [appveyor-build]: https://ci.appveyor.com/project/aaronparker/applicationcontrol
 [psgallery-badge]: https://img.shields.io/powershellgallery/dt/applicationcontrol.svg
 [psgallery]: https://www.powershellgallery.com/packages/applicationcontrol
