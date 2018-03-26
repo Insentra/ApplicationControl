@@ -50,7 +50,7 @@ Function Get-AcDigitalSignature {
         [Parameter(Mandatory = $False, Position = 1, ValueFromPipeline = $False, `
                 HelpMessage = 'Gets only the specified items.')]
         [Alias('Filter')]
-        [string[]]$Include = @('*.exe', '*.dll'),
+        [string[]]$Include = @('*.exe', '*.dll', '*.ocx', '*.msi', '*.ps1', '*.vbs', '*.js'),
 
         [Parameter(ParameterSetName = 'Base', Mandatory = $False)]
         [switch]$Unique

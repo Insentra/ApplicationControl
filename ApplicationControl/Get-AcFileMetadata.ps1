@@ -40,7 +40,7 @@ Function Get-AcFileMetadata {
         [Parameter(Mandatory = $False, Position = 1, ValueFromPipeline = $False, `
                 HelpMessage = 'Gets only the specified items.')]
         [Alias('Filter')]
-        [string[]]$Include = @('*.exe', '*.dll', '*.ocx')
+        [string[]]$Include = @('*.exe', '*.dll', '*.ocx', '*.msi', '*.ps1', '*.vbs', '*.js', '*.cmd', '*.bat')
     )
     Begin {
         # Measure time taken to gather data

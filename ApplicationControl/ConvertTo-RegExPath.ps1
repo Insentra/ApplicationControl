@@ -19,7 +19,7 @@ Function ConvertTo-RegExPath {
         ForEach ($Folder in $Path) {
             $Files | ForEach-Object { 
                 If ($_.Path.Contains($Folder)) {
-                    $_.Path = ConvertTo-EnvironmentPath -Path  "$($Folder)\.*\.$($_.Path.Substring($_.Path.Length - 4).ToLower())"
+                    $_.Path = ConvertTo-EnvironmentPath -Path  "$($Folder)\.*\*$($_.Path.Substring($_.Path.Length - 4).ToLower())"
                 }
             }
         }
