@@ -32,16 +32,13 @@ Once installation is complete, you can validate that the module exists by runnin
 Here is an example using the module to create an Ivanti Application Control configuration for Microsoft Teams. This application uses the [Electron](https://electronjs.org/) framework and [Squirell](https://electronjs.org/docs/api/auto-updater) for in process updates, making white listing a challenge because the application installs and updates in the user profile and in the user context. This example trawls the application folders and find unique metadata to turn into an Ivanti Application Control configuration using RegEx paths to simplify the configuration as much as possible.
 
 ```powershell
-Import-Module ApplicationControl -Force -Verbose
+Import-Module ApplicationControl -Force
 $Path = "C:\Users\aaron\AppData\Local\Microsoft\Teams", "C:\Users\aaron\AppData\Local\Microsoft\TeamsMeetingAddin"
 $Files = @()
 ForEach ($Folder in $Path) {
     $AppFiles = Get-AcFileMetadata -Verbose -Path $Folder -Include '*.exe', '*.dll', '*.ocx'
-    $NoMetadata = $AppFiles | Where-Object { $_.Vendor -le 1 -and $_.Company -le 1 -and $_.Product -le 1 -and $_.Description -le 1 }
-    $Metadata = $AppFiles | Where-Object { $_.Vendor -gt 1 -or $_.Company -gt 1 -or $_.Product -gt 1 -or $_.Description -gt 1 }
-    $UniqueFiles = Select-AcUniqueMetadata -FileList $Metadata -Verbose
+    $UniqueFiles = Select-AcUniqueMetadata -FileList $AppFiles -Verbose
     $RegExFiles = ConvertTo-RegExPath -Files $UniqueFiles -Path $Folder -Verbose
-    $Files += $NoMetadata
     $Files += $RegExFiles
     Remove-Variable AppFiles, NoMetadata, Metadata, UniqueFiles, RegExFiles
 }

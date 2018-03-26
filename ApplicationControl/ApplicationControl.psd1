@@ -27,7 +27,7 @@ Author = 'Aaron Parker'
 CompanyName = 'Insentra Pty Ltd'
 
 # Copyright statement for this module
-Copyright = '(c) 2018 stealthpuppy. All rights reserved.'
+Copyright = '(c) 2018 Insentra Pty Ltd. All rights reserved.'
 
 # Description of the functionality provided by this module
 Description = 'This is a community project that is used to retreive application file metadata for creating application control / white listing rules.'
@@ -128,4 +128,3 @@ PrivateData = @{
 # DefaultCommandPrefix = ''
 
 }
-
