@@ -47,3 +47,8 @@ ForEach ($Folder in $Path) {
 }
 New-AcAampConfiguration -AccessibleFiles $Files -Path C:\Temp\MicrosoftTeams.aamp -RegEx -Verbose
 ```
+
+[appveyor-badge]: https://ci.appveyor.com/api/projects/status/bq59wmi4vd8h2uvq/branch/master?svg=true
+[appveyor-build]: https://ci.appveyor.com/project/aaronparker/applicationcontrol
+[psgallery-badge]: https://img.shields.io/powershellgallery/dt/applicationcontrol.svg
+[psgallery]: https://www.powershellgallery.com/packages/applicationcontrol

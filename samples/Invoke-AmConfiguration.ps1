@@ -51,8 +51,10 @@ ForEach ($Folder in $Path) {
 }
 New-AcAampConfiguration -AccessibleFiles $Files -Path C:\Temp\Slack.aamp -RegEx -Verbose
 
-$Path = "C:\Users\aaron\AppData\Local\SourceTree", "C:\Users\aaron\AppData\Local\Atlassian"
 $Path = "C:\Users\aaron\AppData\Local\Microsoft\OneDrive"
+$Path = "C:\Users\aaron\AppData\Local\SourceTree", "C:\Users\aaron\AppData\Local\Atlassian"
+$Path = "C:\Users\aaron\AppData\Local\GitHubDesktop"
+$Path = "C:\Users\aaron\AppData\Local\yammerdesktop"
 $Files = @()
 ForEach ($Folder in $Path) {
     $AppFiles = Get-AcFileMetadata -Verbose -Path $Folder
@@ -64,7 +66,7 @@ ForEach ($Folder in $Path) {
     $Files += $RegExFiles
     Remove-Variable AppFiles, NoMetadata, Metadata, UniqueFiles, RegExFiles
 }
-New-AcAampConfiguration -AccessibleFiles $Files -Path C:\Temp\OneDrive.aamp -RegEx -Verbose
+New-AcAampConfiguration -AccessibleFiles $Files -Path C:\Temp\Yammer.aamp -RegEx -Verbose
 
 
 # ----------
@@ -91,4 +93,3 @@ $Metadata = $Files | Where-Object {
 $String = "C:\Users\aaron\AppData\Local\Microsoft\Teams\current\resources\meeting-addin\1.0.17306.2\x64\Microsoft.Applications.Telemetry.Windows.dll"
 $Version = "\bv?[0-9]+\.[0-9]+\.[0-9]+(?:\.[0-9]+)?\b"
 $String -replace $Version, "*"
-
