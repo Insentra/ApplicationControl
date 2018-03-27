@@ -12,7 +12,7 @@
 RootModule = 'ApplicationControl.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.0.0.12'
+ModuleVersion = '1.0.0.13'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -69,7 +69,8 @@ PowerShellVersion = '3.0'
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = @('Export-AcDigitalSignature', 'Get-AcDigitalSignature', 
+FunctionsToExport = @('ConvertTo-EnvironmentPath', 'ConvertTo-RegExPath', 
+               'Export-AcDigitalSignature', 'Get-AcDigitalSignature', 
                'Get-AcFileMetadata', 'New-AcAampConfiguration', 
                'Select-AcUniqueMetadata')
 
