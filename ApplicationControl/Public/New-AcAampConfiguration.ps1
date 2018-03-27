@@ -120,14 +120,16 @@ Function New-AcAampConfiguration {
         If ($PSBoundParameters.ContainsKey('AccessibleFiles')) {
             ForEach ($file in $AccessibleFiles) {
                 # Add a file to the list of accessible files.
-                Write-Verbose "[Adding Accessible File] $(ConvertTo-EnvironmentPath -Path $file.Path)"
-                $AccessibleFile.Path = $(ConvertTo-EnvironmentPath -Path $file.Path)
-                If ($AccessibleFile.Path -match ".\*") {
+                # Requires running from an elevated PowerShell instance because the AM objects fail adding all values without admin rights
+                Write-Verbose "[Adding Accessible File] $($file.Path)"
+                If ($file.Path -match "\\.\*\\") {
                     # String matches a RegEx path that includes "\\.*\\ denoting any folder"
+                    $AccessibleFile.Path = $file.Path
                     $AccessibleFile.UseRegularExpression = $True
                     # Make CommandLine unique because this is the file entry key value
                     $AccessibleFile.CommandLine = "$($file.Path) $(([guid]::NewGuid()).ToString())"
                 } Else {
+                    $AccessibleFile.Path = $(ConvertTo-EnvironmentPath -Path $file.Path)
                     $AccessibleFile.CommandLine = $(ConvertTo-EnvironmentPath -Path $file.Path)
                 }
                 $AccessibleFile.TrustedOwnershipChecking = $False
