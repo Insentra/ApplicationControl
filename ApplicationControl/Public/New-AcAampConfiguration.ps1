@@ -25,9 +25,6 @@ Function New-AcAampConfiguration {
         .PARAMETER TrustedVendors
             An array of signed files for extracting the certificate to add to the Trusted Vendors list.
         
-        .PARAMETER RegEx
-            For AccessibleFiles, treat the paths as RegEx.
-
         .PARAMETER GroupRule
             The Group rule to add the AccessibleFiles and TrustedVendors to. Defaults to Everyone.
 
@@ -65,10 +62,6 @@ Function New-AcAampConfiguration {
         [Parameter(Mandatory = $False, Position = 1, ValueFromPipeline = $False, ValueFromPipelineByPropertyName = $False, `
                 HelpMessage = 'Specify a target file or files that have been signed.')]
         [array]$TrustedVendors,
-
-        [Parameter(Mandatory = $False, ValueFromPipeline = $False, ValueFromPipelineByPropertyName = $False, `
-                HelpMessage = 'Treat paths as RegEx.')]
-        [switch]$RegEx,
 
         [Parameter(Mandatory = $False, ValueFromPipeline = $False, ValueFromPipelineByPropertyName = $False, `
                 HelpMessage = 'Specify the rule name to add the items to.')]
@@ -129,7 +122,8 @@ Function New-AcAampConfiguration {
                 # Add a file to the list of accessible files.
                 Write-Verbose "[Adding Accessible File] $(ConvertTo-EnvironmentPath -Path $file.Path)"
                 $AccessibleFile.Path = $(ConvertTo-EnvironmentPath -Path $file.Path)
-                If ($RegEx) {
+                If ($AccessibleFile.Path -match ".\*") {
+                    # String matches a RegEx path that includes "\\.*\\ denoting any folder"
                     $AccessibleFile.UseRegularExpression = $True
                     # Make CommandLine unique because this is the file entry key value
                     $AccessibleFile.CommandLine = "$($file.Path) $(([guid]::NewGuid()).ToString())"

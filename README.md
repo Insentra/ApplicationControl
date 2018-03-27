@@ -42,7 +42,7 @@ ForEach ($Folder in $Path) {
     $Files += $RegExFiles
     Remove-Variable AppFiles, NoMetadata, Metadata, UniqueFiles, RegExFiles
 }
-New-AcAampConfiguration -AccessibleFiles $Files -Path C:\Temp\MicrosoftTeams.aamp -RegEx -Verbose
+New-AcAampConfiguration -AccessibleFiles $Files -Path C:\Temp\MicrosoftTeams.aamp -Verbose
 ```
 
 [appveyor-badge]: https://ci.appveyor.com/api/projects/status/bq59wmi4vd8h2uvq?svg=true

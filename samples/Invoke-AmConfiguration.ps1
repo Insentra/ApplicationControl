@@ -19,7 +19,7 @@ ForEach ($Folder in $Path) {
     $Files += $RegExFiles
     Remove-Variable AppFiles, NoMetadata, Metadata, UniqueFiles, RegExFiles
 }
-New-AcAampConfiguration -AccessibleFiles $Files -Path C:\Temp\HPQC.aamp -RegEx -Verbose
+New-AcAampConfiguration -AccessibleFiles $Files -Path C:\Temp\HPQC.aamp -Verbose
 
 # Micrsosoft Teams
 $Path = "C:\Users\aaron\AppData\Local\Microsoft\Teams", "C:\Users\aaron\AppData\Local\Microsoft\TeamsMeetingAddin"
@@ -34,7 +34,7 @@ ForEach ($Folder in $Path) {
     $Files += $RegExFiles
     Remove-Variable AppFiles, NoMetadata, Metadata, UniqueFiles, RegExFiles
 }
-New-AcAampConfiguration -AccessibleFiles $Files -Path C:\Temp\MicrosoftTeams.aamp -RegEx -Verbose
+New-AcAampConfiguration -AccessibleFiles $Files -Path C:\Temp\MicrosoftTeams.aamp -Verbose
 
 #Slack
 $Path = "C:\Users\aaron\AppData\Local\Slack"
@@ -49,7 +49,7 @@ ForEach ($Folder in $Path) {
     $Files += $RegExFiles
     Remove-Variable AppFiles, NoMetadata, Metadata, UniqueFiles, RegExFiles
 }
-New-AcAampConfiguration -AccessibleFiles $Files -Path C:\Temp\Slack.aamp -RegEx -Verbose
+New-AcAampConfiguration -AccessibleFiles $Files -Path C:\Temp\Slack.aamp -Verbose
 
 $Path = "C:\Users\aaron\AppData\Local\Microsoft\OneDrive"
 $Path = "C:\Users\aaron\AppData\Local\SourceTree", "C:\Users\aaron\AppData\Local\Atlassian"
@@ -66,7 +66,7 @@ ForEach ($Folder in $Path) {
     $Files += $RegExFiles
     Remove-Variable AppFiles, NoMetadata, Metadata, UniqueFiles, RegExFiles
 }
-New-AcAampConfiguration -AccessibleFiles $Files -Path C:\Temp\Yammer.aamp -RegEx -Verbose
+New-AcAampConfiguration -AccessibleFiles $Files -Path C:\Temp\Yammer.aamp -Verbose
 
 
 # ----------
