@@ -13,8 +13,8 @@ Creates an Ivanti Application Control configuration from an array of inputs.
 ## SYNTAX
 
 ```
-New-AcAampConfiguration [[-AccessibleFiles] <Array>] [[-TrustedVendors] <Array>] [-RegEx]
- [[-GroupRule] <String>] [[-Path] <String>] [<CommonParameters>]
+New-AcAampConfiguration [[-AccessibleFiles] <Array>] [[-TrustedVendors] <Array>] [-GroupRule <String>]
+ [-Path <String>] [-IgnoreCRL <Boolean>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -76,23 +76,8 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 3
+Position: 2
 Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -RegEx
-For AccessibleFiles, treat the paths as RegEx.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -107,7 +92,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 4
+Position: Named
 Default value: Everyone
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -123,8 +108,55 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 5
+Position: Named
 Default value: C:\Temp\Configuration.aamp
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -IgnoreCRL
+Enable or disable ignore CRL flags for Trusted Vendor certificates.
+Typically CRL checking is an issue behind a proxy server.
+
+```yaml
+Type: Boolean
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: True
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -WhatIf
+Shows what would happen if the cmdlet runs.
+The cmdlet is not run.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: wi
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Confirm
+Prompts you for confirmation before running the cmdlet.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: cf
+
+Required: False
+Position: Named
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -146,4 +178,3 @@ Twitter: @stealthpuppy
 ## RELATED LINKS
 
 [https://github.com/Insentra/ApplicationControl](https://github.com/Insentra/ApplicationControl)
-

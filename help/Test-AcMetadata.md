@@ -5,44 +5,52 @@ online version: https://github.com/Insentra/ApplicationControl
 schema: 2.0.0
 ---
 
-# Select-AcUniqueMetadata
+# Test-AcMetadata
 
 ## SYNOPSIS
-Filters the output from Get-AcFileMetaData for files with unique metadata.
+Returns True|False if all specified properties does or doesn't have metadata
 
 ## SYNTAX
 
 ```
-Select-AcUniqueMetadata [-FileList] <Array> [<CommonParameters>]
+Test-AcMetadata [-obj] <Object> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Filters the output from Get-AcFileMetaData for files with unique metadata, filtering on Company, Product and Description.
+Returns True|False if all specified properties does or doesn't have metadata. Return $True is the item has metadata we can act on; Return $False if the item does not have metadata. Enabling filtering an array returned from Get-AcFileMetadata for files with or without metadata.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 ```
-Get-AcFileMetadata -Path "C:\Users\Aaron\AppData\Local\Microsoft\Teams" | Select-AcUniqueMetadata
+$NoMetadata = $Files | Where-Object { (Test-AcMetadata $_) -eq $False }
 ```
 
 Description:
-Filters the list of files and metadata trawled from "C:\Users\Aaron\AppData\Local\Microsoft\Teams" by passing it to Select-AcUniqueMetadata
+Filters the items in $Files that do not have any metadata.
+
+### EXAMPLE 2
+```
+$Metadata = $Files | Where-Object { Test-AcMetadata $_ }
+```
+
+Description:
+Filters the items in $Files that do have metadata that we can use for white listing.
 
 ## PARAMETERS
 
-### -FileList
-An array of files with metadata returned from Get-AcFileMetadata
+### -obj
+The array for which to test the metadata values.
 
 ```yaml
-Type: Array
+Type: Object
 Parameter Sets: (All)
 Aliases:
 
 Required: True
 Position: 1
 Default value: None
-Accept pipeline input: False
+Accept pipeline input: True (ByValue)
 Accept wildcard characters: False
 ```
 
@@ -54,7 +62,7 @@ For more information, see about_CommonParameters (http://go.microsoft.com/fwlink
 
 ## OUTPUTS
 
-### System.Array
+### Boolean
 
 ## NOTES
 Author: Aaron Parker

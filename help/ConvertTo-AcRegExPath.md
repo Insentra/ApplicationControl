@@ -5,7 +5,7 @@ online version:
 schema: 2.0.0
 ---
 
-# ConvertTo-EnvironmentPath
+# ConvertTo-AcRegExPath
 
 ## SYNOPSIS
 Replaces strings in a file path with environment variables.
@@ -14,40 +14,28 @@ Internal ApplicationControl function
 ## SYNTAX
 
 ```
-ConvertTo-EnvironmentPath [-Path] <String> [<CommonParameters>]
+ConvertTo-AcRegExPath [-Files] <Array> [-Path] <String[]> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Converts file paths into environment variables. Will convert full qualified paths to their corresponding environment variable.
-
-Supports the following variables:
-* %LOCALAPPDATA%
-* %APPDATA%
-* %TEMP%
-* %ProgramData%
-* %ProgramFiles%
-* %ProgramFiles(x86)%
-* %SystemRoot%
-* %PUBLIC%
+{{Fill in the Description}}
 
 ## EXAMPLES
 
 ### Example 1
 ```powershell
-PS C:\> ConvertTo-EnvironmentPath -Path C:\Users\Aaron\AppData\Local\Microsoft\Teams
-%LOCALAPPDATA%\Microsoft\Teams
+PS C:\> {{ Add example code here }}
 ```
 
-Converts the standard folder 'C:\Users\Aaron\AppData\Local' in path C:\Users\Aaron\AppData\Local\Microsoft\Teams to '%LOCALAPPDATA%' resulting in %LOCALAPPDATA%\Microsoft\Teams
+{{ Add example description here }}
 
 ## PARAMETERS
 
-### -Path
-A fully qualified path for converting to an environment variable.
-
+### -Files
+The files array string with file paths to convert into a RegEx path.
 
 ```yaml
-Type: String
+Type: Array
 Parameter Sets: (All)
 Aliases:
 
@@ -58,15 +46,30 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -Path
+The root path where the target application is located.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 2
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable.
 For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
-System.String
 
 ## OUTPUTS
-System.String
+
+### System.Array
 
 ## NOTES
 

@@ -66,7 +66,7 @@ Aliases: Filter
 
 Required: False
 Position: 2
-Default value: @('*.exe', '*.dll')
+Default value: @('*.exe', '*.dll', '*.ocx', '*.msi', '*.ps1', '*.vbs', '*.js')
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -104,4 +104,3 @@ Twitter: @stealthpuppy
 ## RELATED LINKS
 
 [https://github.com/Insentra/ApplicationControl](https://github.com/Insentra/ApplicationControl)
-

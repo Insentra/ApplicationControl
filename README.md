@@ -6,7 +6,7 @@ A module for retreiving application information for application control and whit
 
 ## Module
 
-This repository contains a folder named ApplicationControl. The folder needs to be installed into one of your PowerShell Module Paths. To see the full list of available PowerShell Module paths, use $env:PSModulePath.split(';') in a PowerShell console.
+This repository contains a folder named ApplicationControl. The folder needs to be installed into one of your PowerShell Module Paths. To see the full list of available PowerShell Module paths, use `$env:PSModulePath.split(';')` in a PowerShell console.
 
 Common PowerShell module paths include:
 
@@ -36,7 +36,7 @@ Import-Module ApplicationControl -Force
 $Path = "C:\Users\aaron\AppData\Local\Microsoft\Teams", "C:\Users\aaron\AppData\Local\Microsoft\TeamsMeetingAddin"
 $Files = @()
 ForEach ($Folder in $Path) {
-    $AppFiles = Get-AcFileMetadata -Verbose -Path $Folder -Include '*.exe', '*.dll', '*.ocx'
+    $AppFiles = Get-AcFileMetadata -Verbose -Path $Folder
     $UniqueFiles = Select-AcUniqueMetadata -FileList $AppFiles -Verbose
     $RegExFiles = ConvertTo-RegExPath -Files $UniqueFiles -Path $Folder -Verbose
     $Files += $RegExFiles
