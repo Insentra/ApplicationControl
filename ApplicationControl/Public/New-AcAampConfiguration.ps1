@@ -129,8 +129,8 @@ Function New-AcAampConfiguration {
                     # Make CommandLine unique because this is the file entry key value
                     $AccessibleFile.CommandLine = "$($file.Path) $(([guid]::NewGuid()).ToString())"
                 } Else {
-                    $AccessibleFile.Path = $(ConvertTo-EnvironmentPath -Path $file.Path)
-                    $AccessibleFile.CommandLine = $(ConvertTo-EnvironmentPath -Path $file.Path)
+                    $AccessibleFile.Path = $(ConvertTo-AcEnvironmentPath -Path $file.Path)
+                    $AccessibleFile.CommandLine = $(ConvertTo-AcEnvironmentPath -Path $file.Path)
                 }
                 $AccessibleFile.TrustedOwnershipChecking = $False
                 # Filter on metadata greater than a single character. Some files have metadata fields with a single space

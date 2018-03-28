@@ -1,4 +1,4 @@
-Function ConvertTo-RegExPath {
+Function ConvertTo-AcRegExPath {
     <#
         .SYNOPSIS
         Replaces strings in a file path with environment variables.
@@ -19,7 +19,7 @@ Function ConvertTo-RegExPath {
         ForEach ($Folder in $Path) {
             $Files | ForEach-Object { 
                 If ($_.Path.Contains($Folder)) {
-                    $_.Path = ConvertTo-EnvironmentPath -Path  "$($Folder)\.*\*$($_.Path.Substring($_.Path.Length - 4).ToLower())"
+                    $_.Path = ConvertTo-AcEnvironmentPath -Path  "$($Folder)\.*\*$($_.Path.Substring($_.Path.Length - 4).ToLower())"
                 }
             }
         }

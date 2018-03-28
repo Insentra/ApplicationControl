@@ -27,17 +27,13 @@ $Files = @()
 
 ForEach ($Folder in $Path) {
     $AppFiles = Get-AcFileMetadata -Verbose -Path $Folder
-    $NoMetadata = $AppFiles | Where-Object {
-        ($Values -contains $_.Vendor) -and `
-        ($Values -contains $_.Company) -and `
-        ($Values -contains $_.Product) -and `
-        ($Values -contains $_.Description)
-    }
+    
+    $NoMetadata = $Files | Where-Object { Test-AcNoMetadata $_ }
+    $Metadata = $Files | Where-Object { Test-AcMetadata $_ }
     
     $NoMetadata | ForEach-Object { $_.Path  = $_.Path -replace "wpasqc01", "*" }
     $NoMetadata | ForEach-Object { $_.Path  = $_.Path -replace $Version, "*" }
 
-    $Metadata = $AppFiles | Where-Object { $_.Vendor -gt 1 -or $_.Company -gt 1 -or $_.Product -gt 1 -or $_.Description -gt 1 }
     $UniqueFiles = Select-AcUniqueMetadata -FileList $Metadata -Verbose
     $RegExFiles = ConvertTo-RegExPath -Files $UniqueFiles -Path $Folder -Verbose
     $Files += $NoMetadata

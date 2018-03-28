@@ -1,4 +1,4 @@
-Function ConvertTo-EnvironmentPath {
+Function ConvertTo-AcEnvironmentPath {
     <#
         .SYNOPSIS
         Replaces strings in a file path with environment variables.
