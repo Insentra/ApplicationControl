@@ -19,19 +19,18 @@ $Path = @("C:\Users\aaparker\AppData\Local\yammerdesktop")
 $Path = @("C:\Users\aaparker\AppData\Local\HP", "C:\ProgramData\HP")
 $Path = @("C:\Users\aaparker\AppData\Local\Google")
 $Path = @("C:\Users\aaparker\AppData\Local\GoToMeeting", "C:\Users\aaparker\AppData\Local\GoTo Opener")
+$Path = @("C:\Users\aaparker\AppData\Roaming\Mozilla")
 
 # Create configuration
 $Version = "\bv?[0-9]+\.[0-9]+\.[0-9]+(?:\.[0-9]+)?\b"
-$Values = @(" ", "", $Null)
 $Files = @()
-
 ForEach ($Folder in $Path) {
     $AppFiles = Get-AcFileMetadata -Verbose -Path $Folder
     
-    $NoMetadata = $Files | Where-Object { Test-AcNoMetadata $_ }
-    $Metadata = $Files | Where-Object { Test-AcMetadata $_ }
+    $NoMetadata = $AppFiles | Where-Object { (Test-AcMetadata $_) -eq $False }
+    $Metadata = $AppFiles | Where-Object { Test-AcMetadata $_ }
     
-    $NoMetadata | ForEach-Object { $_.Path  = $_.Path -replace "wpasqc01", "*" }
+    $NoMetadata | ForEach-Object { $_.Path  = $_.Path -replace "<server>", "*" }
     $NoMetadata | ForEach-Object { $_.Path  = $_.Path -replace $Version, "*" }
 
     $UniqueFiles = Select-AcUniqueMetadata -FileList $Metadata -Verbose
