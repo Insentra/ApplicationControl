@@ -12,7 +12,7 @@
 RootModule = 'ApplicationControl.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.0.0.14'
+ModuleVersion = '1.0.0.15'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -72,7 +72,7 @@ PowerShellVersion = '3.0'
 FunctionsToExport = @('ConvertTo-AcEnvironmentPath', 'ConvertTo-AcRegExPath', 
                'Export-AcDigitalSignature', 'Get-AcDigitalSignature', 
                'Get-AcFileMetadata', 'New-AcAampConfiguration', 
-               'Select-AcUniqueMetadata', 'Test-AcMetadata', 'Test-AcNoMetadata')
+               'Select-AcUniqueMetadata', 'Test-AcMetadata')
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()
