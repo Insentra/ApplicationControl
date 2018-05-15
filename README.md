@@ -19,11 +19,19 @@ Common PowerShell module paths include:
 1. Download the `master branch` to your workstation.
 2. Copy the contents of the ApplicationControl folder onto your workstation into the desired PowerShell Module path.
 3. Open a Powershell console with the Run as Administrator option.
-4. Run `Set-ExecutionPolicy` using the parameter `RemoteSigned` or `Bypass`.
+4. Run [`Set-ExecutionPolicy`](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.security/set-executionpolicy?view=powershell-6) using the parameter `RemoteSigned` or `Bypass`.
 
-Once installation is complete, you can validate that the module exists by running `Get-Module -ListAvailable ApplicationControl`. To use the module, load it with:
+Once installation is complete, you can validate that the module exists by running `Get-Module -ListAvailable ApplicationControl`. To use the module when it is located in one of the locations above, load it with:
 
-    Import-Module ApplicationControl
+```powershell
+Import-Module ApplicationControl
+```
+
+The module can be loaded from a specific path if it is not in one of the default locations:
+
+```powershell
+Import-Module C:\Temp\ApplicationControl
+```
 
 ## Examples
 
