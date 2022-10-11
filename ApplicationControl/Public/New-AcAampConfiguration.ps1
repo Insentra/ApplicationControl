@@ -53,51 +53,51 @@ Function New-AcAampConfiguration {
           Adds Trusted Vendor certificates from the files in the array $SignedFiles to a new Application Control configuration at "C:\Temp\Configuration.aamp".
     #>
     [CmdletBinding(SupportsShouldProcess = $True)]
-    [OutputType([String])]
-    Param (
+    [OutputType([System.String])]
+    param (
         [Parameter(Mandatory = $False, Position = 0, ValueFromPipeline = $True, ValueFromPipelineByPropertyName = $False, `
                 HelpMessage = 'Specify the array of accessible files with metadata to add.')]
-        [array]$AccessibleFiles,
+        [System.Array]$AccessibleFiles,
 
         [Parameter(Mandatory = $False, Position = 1, ValueFromPipeline = $False, ValueFromPipelineByPropertyName = $False, `
                 HelpMessage = 'Specify a target file or files that have been signed.')]
-        [array]$TrustedVendors,
+        [System.Array]$TrustedVendors,
 
         [Parameter(Mandatory = $False, ValueFromPipeline = $False, ValueFromPipelineByPropertyName = $False, `
                 HelpMessage = 'Specify the rule name to add the items to.')]
-        [string]$GroupRule = "Everyone",
+        [System.String]$GroupRule = "Everyone",
 
         [Parameter(Mandatory = $False, ValueFromPipeline = $False, ValueFromPipelineByPropertyName = $False, `
                 HelpMessage = 'Specify a path to the configuration to output.')]
-        [string]$Path = "C:\Temp\Configuration.aamp",
+        [System.String]$Path = "C:\Temp\Configuration.aamp",
 
         [Parameter(Mandatory = $False, ValueFromPipeline = $False, ValueFromPipelineByPropertyName = $False, `
-        HelpMessage = 'Enable or disable ignore CRL flags for Trusted Vendor certificates.')]
-        [boolean]$IgnoreCRL = $True
+                HelpMessage = 'Enable or disable ignore CRL flags for Trusted Vendor certificates.')]
+        [System.Boolean]$IgnoreCRL = $True
     )
-    Begin {  
+    begin {  
         # Create the configuration; Create the configuration helper
-        Try {
+        try {
             Write-Verbose "Loading object 'AM.Configuration.5'."
             $Configuration = New-Object -ComObject 'AM.Configuration.5' -ErrorAction SilentlyContinue
         }
-        Catch {
-            Throw "Unable to load COM Object 'AM.Configuration.5'"
+        catch {
+            throw "Unable to load COM Object 'AM.Configuration.5'"
         }
-        Try {
+        try {
             Write-Verbose "Loading object 'AM.ConfigurationHelper.1'."
             $ConfigurationHelper = New-Object -ComObject 'AM.ConfigurationHelper.1' -ErrorAction SilentlyContinue
         }
-        Catch {
-            Throw "Unable to load COM Object 'AM.ConfigurationHelper.1'"
+        catch {
+            throw "Unable to load COM Object 'AM.ConfigurationHelper.1'"
         }
 
         # Create configuration objects
-        If ($PSBoundParameters.ContainsKey('AccessibleFiles')) {
+        if ($PSBoundParameters.ContainsKey('AccessibleFiles')) {
             Write-Verbose "Creating AM.File instance"
             $AccessibleFile = $Configuration.CreateInstanceFromClassName("AM.File")
         }
-        If ($PSBoundParameters.ContainsKey('TrustedVendors')) {
+        if ($PSBoundParameters.ContainsKey('TrustedVendors')) {
             Write-Verbose "Creating AM.DigitalCertificate instance"
             $DigitalCertificate = $Configuration.CreateInstanceFromClassName("AM.DigitalCertificate")
         }
@@ -109,60 +109,65 @@ Function New-AcAampConfiguration {
 
         # Remove the default folders from the configuration to make viewing the config simpler
         Write-Verbose "Removing default folders from the configuration in rule $GroupRule."
-        ForEach ($folder in $Configuration.GroupRules.Item($GroupRule).AccessibleFolders) {
+        foreach ($folder in $Configuration.GroupRules.Item($GroupRule).AccessibleFolders) {
             $Configuration.GroupRules.Item($GroupRule).AccessibleFolders.Remove($folder.Path) | Out-Null
         }
 
         # RegEx to grab CN from certificates
         $FindCN = "(?:.*CN=)(.*?)(?:,\ O.*)"
     }
-    Process {
-        If ($PSBoundParameters.ContainsKey('AccessibleFiles')) {
-            ForEach ($file in $AccessibleFiles) {
+    process {
+        if ($PSBoundParameters.ContainsKey('AccessibleFiles')) {
+            foreach ($file in $AccessibleFiles) {
                 # Add a file to the list of accessible files.
                 # Requires running from an elevated PowerShell instance because the AM objects fail adding all values without admin rights
                 Write-Verbose "[Adding Accessible File] $($file.Path)"
-                If ($file.Path -match "\\.\*\\") {
+                if ($file.Path -match "\\.\*\\") {
                     # String matches a RegEx path that includes "\\.*\\ denoting any folder"
                     $AccessibleFile.Path = $file.Path
                     $AccessibleFile.UseRegularExpression = $True
                     # Make CommandLine unique because this is the file entry key value
                     $AccessibleFile.CommandLine = "$($file.Path) $(([guid]::NewGuid()).ToString())"
-                } Else {
+                }
+                else {
                     $AccessibleFile.Path = $(ConvertTo-AcEnvironmentPath -Path $file.Path)
                     $AccessibleFile.CommandLine = $(ConvertTo-AcEnvironmentPath -Path $file.Path)
                 }
                 $AccessibleFile.TrustedOwnershipChecking = $False
                 # Filter on metadata greater than a single character. Some files have metadata fields with a single space
-                If ($file.Company -gt 1) {
+                if ($file.Company -gt 1) {
                     $AccessibleFile.Metadata.CompanyName = $file.Company
                     $AccessibleFile.Metadata.CompanyNameEnabled = $True
                     $AccessibleFile.Description = $file.Company
-                } Else {
+                }
+                else {
                     $AccessibleFile.Metadata.CompanyNameEnabled = $False
                 }
-                If ($file.Vendor -gt 1) {
+                if ($file.Vendor -gt 1) {
                     $AccessibleFile.Metadata.VendorName = $file.Vendor
                     $AccessibleFile.Metadata.VendorNameEnabled = $True
                     $AccessibleFile.Description = $file.Vendor
-                } Else {
+                }
+                else {
                     $AccessibleFile.Metadata.VendorNameEnabled = $False
                 }
-                If ($file.Product -gt 1) {
+                if ($file.Product -gt 1) {
                     $AccessibleFile.Metadata.ProductName = $file.Product
                     $AccessibleFile.Metadata.ProductNameEnabled = $True
                     $AccessibleFile.Description = $file.Product
-                } Else {
+                }
+                else {
                     $AccessibleFile.Metadata.ProductNameEnabled = $False
                 }
-                If ($file.Description -gt 1) {
+                if ($file.Description -gt 1) {
                     $AccessibleFile.Metadata.FileDescription = $file.Description
                     $AccessibleFile.Metadata.FileDescriptionEnabled = $True
                     $AccessibleFile.Description = $file.Description
-                } Else {
+                }
+                else {
                     $AccessibleFile.Metadata.FileDescriptionEnabled = $False
                 }
-                If (!($AccessibleFile.Description)) {
+                if (!($AccessibleFile.Description)) {
                     $AccessibleFile.Description = "[No metadata found]"
                 }
 
@@ -178,8 +183,8 @@ Function New-AcAampConfiguration {
             }
         }
 
-        If ($PSBoundParameters.ContainsKey('TrustedVendors')) {
-            ForEach ($File in $TrustedVendors) {
+        if ($PSBoundParameters.ContainsKey('TrustedVendors')) {
+            foreach ($File in $TrustedVendors) {
                 # Adding Trusted Vendors
                 Write-Verbose "[Adding Trusted Vendor]"
                 # Use the helper object to read the certificate and expiry date from the signed file
@@ -199,7 +204,7 @@ Function New-AcAampConfiguration {
                 $DigitalCertificate.Description = "Issuer: $($CertObj.Issuer -replace $FindCN, '$1'). Thumbprint: $($CertObj.Thumbprint)"
                 $DigitalCertificate.IssuedTo = ($CertObj.Subject -replace $FindCN, '$1') -replace '"', ""
                 $DigitalCertificate.ExpiryDate = "$($dtMyDate.Value.ToShortDateString()) $($dtMyDate.Value.ToShortTimeString())"
-                If ($IgnoreCRL) {
+                if ($IgnoreCRL) {
                     # Enable 'Ignore end Certificate revocation errors' - remove if no issue with CRL checking.
                     # Typically CRL checking is an issue behind a proxy server
                     $DigitalCertificate.ErrorIgnoreFlags = 1792
@@ -208,10 +213,10 @@ Function New-AcAampConfiguration {
             }
         }
     }
-    End {
+    end {
         # Save the configuration and output the path to it
-        If (!(Test-Path -Path (Split-Path -Path $Path -Parent))) {
-            If ($pscmdlet.ShouldProcess((Split-Path -Path $Path -Parent), "Create folder")) {
+        if (!(Test-Path -Path (Split-Path -Path $Path -Parent))) {
+            if ($pscmdlet.ShouldProcess((Split-Path -Path $Path -Parent), "Create folder")) {
                 New-Item -Path (Split-Path -Path $Path -Parent) -ItemType Directory | Out-Null
             }
         }

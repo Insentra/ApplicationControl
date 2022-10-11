@@ -5,10 +5,10 @@ Function ConvertTo-AcEnvironmentPath {
         Internal ApplicationControl function
     #>
     [CmdletBinding(SupportsShouldProcess = $False)]
-    [OutputType([String])]
-    Param (
+    [OutputType([System.String])]
+    param (
         [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline = $False)]
-        [string]$Path
+        [System.String]$Path
     )
     $RegExLocalAppData = "^[a-zA-Z]:\\Users\\.*\\AppData\\Local\\"
     $RegExAppData = "^[a-zA-Z]:\\Users\\.*\\AppData\\Roaming\\"
@@ -19,7 +19,7 @@ Function ConvertTo-AcEnvironmentPath {
     $RegExSystemRoot = "^[a-zA-Z]:\\Windows\\"
     $RegExPublic = "^[a-zA-Z]:\\Users\\Public\\"
 
-    Switch -Regex ($Path) {
+    switch -Regex ($Path) {
         { $_ -match $RegExLocalAppData } { $Path = $Path -replace $RegExLocalAppData, "%LOCALAPPDATA%\" }
         { $_ -match $RegExAppData } { $Path = $Path -replace $RegExAppData, "%APPDATA%\" }
         { $_ -match $RegExTemp } { $Path = $Path -replace $RegExTemp, "%TEMP%\" }

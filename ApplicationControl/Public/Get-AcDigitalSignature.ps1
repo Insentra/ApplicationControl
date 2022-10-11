@@ -40,41 +40,41 @@ Function Get-AcDigitalSignature {
             Scans the folder specified in the Path variable and returns the digital signatures for only the first file with a unique certificate.
     #>
     [CmdletBinding(SupportsShouldProcess = $False)]
-    [OutputType([Array])]
-    Param (
+    [OutputType([System.Array])]
+    param (
         [Parameter(Mandatory = $False, Position = 0, ValueFromPipeline = $True, ValueFromPipelineByPropertyName = $True, `
                 HelpMessage = 'Specify a target path in which to scan files for digital signatures.')]
         [Alias('FullName', 'PSPath')]
-        [string[]]$Path,
+        [System.String[]]$Path,
 
         [Parameter(Mandatory = $False, Position = 1, ValueFromPipeline = $False, `
                 HelpMessage = 'Gets only the specified items.')]
         [Alias('Filter')]
-        [string[]]$Include = @('*.exe', '*.dll', '*.ocx', '*.msi', '*.ps1', '*.vbs', '*.js'),
+        [System.String[]]$Include = @('*.exe', '*.dll', '*.ocx', '*.msi', '*.ps1', '*.vbs', '*.js'),
 
         [Parameter(ParameterSetName = 'Base', Mandatory = $False)]
         [switch]$Unique
     )
-    Begin {
+    begin {
         # Measure time taken to gather data
         $StopWatch = [system.diagnostics.stopwatch]::StartNew()
         
         # Initialise $Signatures as an array
         $Signatures = @()
     }
-    Process {
+    process {
         # For each path in $Path, check that the path exists
-        ForEach ($Loc in $Path) {
-            If (Test-Path -Path $Loc -IsValid) {
+        foreach ($Loc in $Path) {
+            if (Test-Path -Path $Loc -IsValid) {
 
                 # Get the item to determine whether it's a file or folder
-                If ((Get-Item -Path $Loc -Force).PSIsContainer) {
+                if ((Get-Item -Path $Loc -Force).PSIsContainer) {
 
                     # Target is a folder, so trawl the folder for .exe and .dll files in the target and sub-folders
                     Write-Verbose "Scanning files in folder: $Loc"
                     $items = Get-ChildItem -Path $Loc -Recurse -File -Include $Include
                 }
-                Else {
+                else {
 
                     # Target is a file, so just get metadata for the file
                     Write-Verbose "Scanning file: $Loc"
@@ -84,23 +84,23 @@ Function Get-AcDigitalSignature {
                 # Get Exe and Dll files from the target path (inc. subfolders), find signatures and return certain properties in a grid view
                 Write-Verbose "Getting digital signatures for: $Loc"
                 $Signatures += $items | Get-AuthenticodeSignature | `
-                    Select-Object @{Name = "Thumbprint"; Expression = {$_.SignerCertificate.Thumbprint}}, `
-                @{Name = "Subject"; Expression = {$_.SignerCertificate.Subject}}, `
-                @{Name = "Expiry"; Expression = {$_.SignerCertificate.NotAfter}}, `
+                    Select-Object @{Name = "Thumbprint"; Expression = { $_.SignerCertificate.Thumbprint } }, `
+                @{Name = "Subject"; Expression = { $_.SignerCertificate.Subject } }, `
+                @{Name = "Expiry"; Expression = { $_.SignerCertificate.NotAfter } }, `
                     Status, `
                     Path
             }
-            Else {
+            else {
                 Write-Error "Path does not exist: $Loc"
             }
         }
     }
-    End {
+    end {
         # If -Unique is specified, filter the signatures list and return the first item of each unique certificate
         # If -Export is specified, we also only want unique certificate files
-        If ($Export -or $Unique) { 
+        if ($Export -or $Unique) { 
             Write-Verbose "Filtering for unique signatures."
-            $Signatures = $Signatures | Where-Object {$_.Status -eq "Valid" -or $_.Status -eq "UnknownError" } | `
+            $Signatures = $Signatures | Where-Object { $_.Status -eq "Valid" -or $_.Status -eq "UnknownError" } | `
                 Group-Object -Property Thumbprint | `
                 ForEach-Object { $_.Group | Select-Object -First 1 }
             Write-Verbose "$($Signatures.Count) unique signature/s found in $Path"

@@ -5,26 +5,26 @@ Function ConvertTo-AcRegExPath {
         Internal ApplicationControl function
     #>
     [CmdletBinding(SupportsShouldProcess = $False)]
-    [OutputType([Array])]
-    Param (
+    [OutputType([System.Array])]
+    param (
         [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline = $False, ValueFromPipelineByPropertyName = $False)]
-        [array]$Files,
+        [System.Array]$Files,
 
         [Parameter(Mandatory = $True, Position = 1, ValueFromPipeline = $False)]
-        [string[]]$Path
+        [System.String[]]$Path
     )
-    Begin {
+    begin {
     }
-    Process {
-        ForEach ($Folder in $Path) {
+    process {
+        foreach ($Folder in $Path) {
             $Files | ForEach-Object { 
-                If ($_.Path.Contains($Folder)) {
+                if ($_.Path.Contains($Folder)) {
                     $_.Path = ConvertTo-AcEnvironmentPath -Path  "$($Folder)\.*\*$($_.Path.Substring($_.Path.Length - 4).ToLower())"
                 }
             }
         }
     }
-    End {
+    end {
         $Files | ForEach-Object { $_.Path = $_.Path -replace [regex]::escape('\'), [regex]::escape('\') }
         $Files
     }

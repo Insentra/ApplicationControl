@@ -20,7 +20,7 @@ else {
         $manifest = Test-ModuleManifest -Path $manifestPath
         [System.Version]$version = $manifest.Version
         Write-Output "Old Version: $version"
-        [String]$newVersion = New-Object -TypeName System.Version -ArgumentList ($version.Major, $version.Minor, $version.Build, $env:APPVEYOR_BUILD_NUMBER)
+        [System.String]$newVersion = New-Object -TypeName System.Version -ArgumentList ($version.Major, $version.Minor, $version.Build, $env:APPVEYOR_BUILD_NUMBER)
         Write-Output "New Version: $newVersion"
 
         # Update the manifest with the new version value and fix the weird string replace bug
@@ -31,12 +31,12 @@ else {
         (Get-Content -Path $manifestPath) -replace 'FunctionsToExport = ', 'FunctionsToExport = @(' | Set-Content -Path $manifestPath -Force
         (Get-Content -Path $manifestPath) -replace "$($functionList[-1])'", "$($functionList[-1])')" | Set-Content -Path $manifestPath -Force
     }
-    Catch {
-        Throw $_
+    catch {
+        throw $_
     }
 
     # Publish the new version back to Master on GitHub
-    Try {
+    try {
         # Set up a path to the git.exe cmd, import posh-git to give us control over git, and then push changes to GitHub
         # Note that "update version" is included in the appveyor.yml file's "skip a build" regex to avoid a loop
         $env:Path += ";$env:ProgramFiles\Git\cmd"

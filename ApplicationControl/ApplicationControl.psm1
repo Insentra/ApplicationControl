@@ -3,12 +3,12 @@ $Public  = @( Get-ChildItem -Path $PSScriptRoot\Public\*.ps1 -ErrorAction Silent
 $Private = @( Get-ChildItem -Path $PSScriptRoot\Private\*.ps1 -ErrorAction SilentlyContinue )
 
 # Dot source the files
-ForEach ($import in @($Public + $Private)) {
-    Try {
-        . $import.fullname
+foreach ($import in @($Public + $Private)) {
+    try {
+        . $import.FullName
     }
-    Catch {
-        Write-Error -Message "Failed to import function $($import.fullname): $_"
+    catch {
+        Write-Error -Message "Failed to import function $($import.FullName): $_"
     }
 }
 

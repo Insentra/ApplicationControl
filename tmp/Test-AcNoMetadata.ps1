@@ -5,14 +5,14 @@ Function Test-AcNoMetadata {
             Enabling filtering an array returned from Get-AcFileMetadata for files with no metadata
     #>
     [CmdletBinding(SupportsShouldProcess = $False)]
-    [OutputType([Array])]
-    Param (
+    [OutputType([System.Array])]
+    param (
         [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline = $True, ValueFromPipelineByPropertyName = $False)]
         [object]$obj
     )
-    ForEach ($Property in 'Vendor', 'Company', 'Product', 'Description') {
+    foreach ($Property in 'Vendor', 'Company', 'Product', 'Description') {
         Write-Verbose "Testing $($obj.Path)"
-        If ($obj.$Property -notin @($Null, "", " ")) { Return $False }
+        if ($obj.$Property -notin @($Null, "", " ")) { Return $False }
     }
     Return $True
 }

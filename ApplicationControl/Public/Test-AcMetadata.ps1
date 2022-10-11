@@ -35,13 +35,13 @@ Function Test-AcMetadata {
     #>
     [CmdletBinding(SupportsShouldProcess = $False)]
     [OutputType([Bool])]
-    Param (
+    param (
         [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline = $True, ValueFromPipelineByPropertyName = $False)]
         [object]$obj
     )
-    ForEach ($Property in 'Vendor', 'Company', 'Product', 'Description') {
+    foreach ($Property in 'Vendor', 'Company', 'Product', 'Description') {
         Write-Verbose "Testing $($obj.Path)"
-        If ($obj.$Property -ge 2) { Return $True }
+        if ($obj.$Property -ge 2) { Return $True }
     }
-    Return $False
+    return $False
 }

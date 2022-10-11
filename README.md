@@ -41,7 +41,7 @@ Here is an example using the module to create an Ivanti Application Control conf
 Import-Module ApplicationControl -Force
 $Path = "C:\Users\aaron\AppData\Local\Microsoft\Teams", "C:\Users\aaron\AppData\Local\Microsoft\TeamsMeetingAddin"
 $Files = @()
-ForEach ($Folder in $Path) {
+foreach ($Folder in $Path) {
     $AppFiles = Get-AcFileMetadata -Verbose -Path $Folder
     $UniqueFiles = Select-AcUniqueMetadata -FileList $AppFiles -Verbose
     $RegExFiles = ConvertTo-RegExPath -Files $UniqueFiles -Path $Folder -Verbose

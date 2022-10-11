@@ -1,48 +1,48 @@
         $AccessibleFolder = $Configuration.CreateInstanceFromClassName("AM.Folder")
 
                 # Disabled until adding multiple folders with the same path can be fixed
-        <#If ($PSBoundParameters.ContainsKey('AccessibleFolders')) {
-            ForEach ($file in $AccessibleFolders) {
+        <#if ($PSBoundParameters.ContainsKey('AccessibleFolders')) {
+            foreach ($file in $AccessibleFolders) {
                 # Add a file to the list of accessible files.
                 $FolderPath = Split-Path -Path $file.Path -Parent
                 Write-Verbose "[Adding Accessible Folder] $(ConvertTo-EnvironmentPath -Path $FolderPath)"
                 $AccessibleFolder.ItemKey = $(ConvertTo-EnvironmentPath -Path $FolderPath)
                 $AccessibleFolder.Path = $(ConvertTo-EnvironmentPath -Path $FolderPath)
-                If ($RegEx) { $AccessibleFolder.UseRegularExpression -eq $True}
+                if ($RegEx) { $AccessibleFolder.UseRegularExpression -eq $True}
                 $AccessibleFolder.Recursive = $True
                 $AccessibleFolder.TrustedOwnershipChecking = $False
-                If ($file.Company -gt 1) {
+                if ($file.Company -gt 1) {
                     $AccessibleFolder.Metadata.CompanyName = $file.Company
                     $AccessibleFolder.Metadata.CompanyNameEnabled = $True
                     $AccessibleFolder.Description = $file.Company
                 }
-                Else {
+                else {
                     $AccessibleFolder.Metadata.CompanyNameEnabled = $False
                 }
-                If ($file.Vendor -gt 1) {
+                if ($file.Vendor -gt 1) {
                     $AccessibleFolder.Metadata.VendorName = $file.Vendor
                     $AccessibleFolder.Metadata.VendorNameEnabled = $True
                     $AccessibleFolder.Description = $file.Vendor
-                } Else {
+                } else {
                     $AccessibleFile.Metadata.VendorNameEnabled = $False
                 }
-                If ($file.Product -gt 1) {
+                if ($file.Product -gt 1) {
                     $AccessibleFolder.Metadata.ProductName = $file.Product
                     $AccessibleFolder.Metadata.ProductNameEnabled = $True
                     $AccessibleFolder.Description = $file.Product
                 }
-                Else {
+                else {
                     $AccessibleFolder.Metadata.ProductNameEnabled = $False
                 }
-                If ($file.Description -gt 1) {
+                if ($file.Description -gt 1) {
                     $AccessibleFolder.Metadata.FileDescription = $file.Description
                     $AccessibleFolder.Metadata.FileDescriptionEnabled = $True
                     $AccessibleFolder.Description = $file.Description
                 }
-                Else {
+                else {
                     $AccessibleFolder.Metadata.FileDescriptionEnabled = $False
                 } 
-                If (!($AccessibleFolder.Description)) {
+                if (!($AccessibleFolder.Description)) {
                     $AccessibleFolder.Description = "[No metadata found]"
                 }
                 

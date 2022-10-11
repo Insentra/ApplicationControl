@@ -35,35 +35,36 @@ Function Export-AcDigitalSignature {
             Exports all of the unique digital certificates from "C:\Users\aaron\AppData\Local\GitHubDesktop" to C:\Temp.
     #>
     [CmdletBinding(SupportsShouldProcess = $False)]
-    [OutputType([Array])]
-    Param (
+    [OutputType([System.Array])]
+    param (
         [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline = $True, ValueFromPipelineByPropertyName = $True, `
                 HelpMessage = 'An array of signed files from which to extract the certificates.')]
         [Alias('FullName', 'PSPath')]
-        [string[]]$Path,
+        [System.String[]]$Path,
 
         [Parameter(Mandatory = $False, HelpMessage = 'Export certificates to files in a specified folder.')]
-        [ValidateScript( { If (Test-Path $_ -PathType 'Container') { $True } Else { Throw "Cannot find output path $_" } })]
-        [string]$Destination
+        [ValidateScript( { if (Test-Path $_ -PathType 'Container') { $True } else { throw "Cannot find output path $_" } })]
+        [System.String]$Destination
     )
-    Begin {
+    begin {
         Write-Verbose "Importing module PKI."
-        If (Get-Module -ListAvailable PKI -ErrorAction SilentlyContinue) {
-            Try {
+        if (Get-Module -ListAvailable PKI -ErrorAction SilentlyContinue) {
+            try {
                 Import-Module -Name PKI -ErrorAction SilentlyContinue
             }
-            Catch {
-                Throw "Unable to import module PKI."
+            catch {
+                throw "Unable to import module PKI."
             }
-        } Else {
-            Throw "Unable to find required module PKI"
+        }
+        else {
+            throw "Unable to find required module PKI"
         }
         $Output = @()
     }
-    Process {
+    process {
         # Output the a P7b certificate file for each unique certificate found from files in the folder
         Write-Verbose "Exporting certificate P7B files to $Export."
-        ForEach ( $File in $Path ) {
+        foreach ( $File in $Path ) {
             Write-Verbose "Getting certificate from $File."
             $cert = (Get-AuthenticodeSignature $File).SignerCertificate
             Write-Verbose "Exporting certificate: $Destination\$($cert.Thumbprint).p7b"
@@ -71,7 +72,7 @@ Function Export-AcDigitalSignature {
             $Output += "$Destination\$($cert.Thumbprint).p7b"
         } 
     }
-    End {
+    end {
         $Output
     }
 }
