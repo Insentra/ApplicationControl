@@ -1,3 +1,7 @@
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingWriteHost", "", Justification="Output is for testing only")]
+[CmdletBinding()]
+param()
+
 # Line break for readability in AppVeyor console
 Write-Host -Object ''
 

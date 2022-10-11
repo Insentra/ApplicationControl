@@ -26,6 +26,7 @@ function Select-AcUniqueMetadata {
             Filters the list of files and metadata trawled from "C:\Users\Aaron\AppData\Local\Microsoft\Teams" by passing it to Select-AcUniqueMetadata
     #>
     [CmdletBinding(SupportsShouldProcess = $False)]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseSingularNouns", "", Justification="Metadata is a singular noun")]
     [OutputType([System.Array])]
     param (
         [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline = $False, `

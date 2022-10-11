@@ -1,3 +1,7 @@
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingWriteHost", "", Justification="Output is for testing only")]
+[CmdletBinding()]
+param()
+
 # AppVeyor Testing
 if (Test-Path 'env:GITHUB_WORKSPACE') {
     $manifest = "$env:GITHUB_WORKSPACE\ApplicationControl\ApplicationControl.psd1"

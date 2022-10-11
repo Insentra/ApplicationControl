@@ -2,6 +2,10 @@
     .SYNOPSIS
         AppVeyor tests setup script.
 #>
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingWriteHost", "", Justification="Output is for testing only")]
+[CmdletBinding()]
+param()
+
 # Line break for readability in AppVeyor console
 Write-Host -Object ''
 Write-Host "PowerShell Version:" $PSVersionTable.PSVersion.ToString()

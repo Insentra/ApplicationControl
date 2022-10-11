@@ -30,6 +30,7 @@ function Get-AcFileMetadata {
             Scans the folder specified in the Path variable and returns the metadata for each file.
     #>
     [CmdletBinding(SupportsShouldProcess = $False)]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseSingularNouns", "", Justification="Metadata is a singular noun")]
     [OutputType([System.Array])]
     param (
         [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline = $True, ValueFromPipelineByPropertyName = $True, `
