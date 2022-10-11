@@ -1,0 +1,34 @@
+name: PSScriptAnalyzer
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, development ]
+    paths:
+      - "ApplicationControl/**"
+      - "tests/**"
+  pull_request:
+    branches: [ main ]
+    paths:
+      - "ApplicationControl/**"
+      - "tests/**"
+
+jobs:
+  build:
+    name: PSScriptAnalyzer
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Run PSScriptAnalyzer
+        uses: microsoft/psscriptanalyzer-action@6b2948b1944407914a58661c49941824d149734f
+        with:
+          path: ./
+          recurse: true 
+          output: results.sarif
+      
+      # Upload the SARIF file generated in the previous step
+      - name: Upload SARIF results file
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: results.sarif

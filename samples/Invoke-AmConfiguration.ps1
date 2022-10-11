@@ -4,7 +4,7 @@
         Sample commands for creating white listing for Ivanti Application Control.
 #>
 
-If (Get-Module ApplicationControl) { Remove-Module ApplicationControl}
+if (Get-Module ApplicationControl) { Remove-Module ApplicationControl }
 Import-Module ApplicationControl -Force -Verbose
 
 # App paths
@@ -25,7 +25,7 @@ $Path = @("C:\Users\aaron\AppData\Roaming\Mozilla")
 # RegEx to find version numbers in strings
 $Version = "\bv?[0-9]+\.[0-9]+\.[0-9]+(?:\.[0-9]+)?\b"
 $Files = @()
-ForEach ($Folder in $Path) {
+foreach ($Folder in $Path) {
     # Get all executables in the target folder/s and available metadata
     $AppFiles = Get-AcFileMetadata -Verbose -Path $Folder
     
@@ -34,8 +34,8 @@ ForEach ($Folder in $Path) {
     $Metadata = $AppFiles | Where-Object { Test-AcMetadata $_ }
     
     # Update path strings in no metadata replace specific strings, version numbers etc.
-    $NoMetadata | ForEach-Object { $_.Path  = $_.Path -replace "<server>", "*" }
-    $NoMetadata | ForEach-Object { $_.Path  = $_.Path -replace $Version, "*" }
+    $NoMetadata | ForEach-Object { $_.Path = $_.Path -replace "<server>", "*" }
+    $NoMetadata | ForEach-Object { $_.Path = $_.Path -replace $Version, "*" }
 
     # Filter for files with unique metadata and turn the paths into a RegEx to account for multiple files
     $UniqueFiles = Select-AcUniqueMetadata -FileList $Metadata -Verbose

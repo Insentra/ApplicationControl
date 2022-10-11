@@ -1,8 +1,6 @@
 # Application Control
 
-[![Build status](https://ci.appveyor.com/api/projects/status/bq59wmi4vd8h2uvq/branch/master?svg=true)](https://ci.appveyor.com/project/aaronparker/applicationcontrol/branch/master)
-
-A module for retreiving application information for application control and white listing purposes with tools such as Ivanti Application Manager and Microsoft AppLocker.
+A module for retrieving application information for application control and white listing purposes with tools such as Ivanti Application Manager and Microsoft AppLocker.
 
 ## Module
 

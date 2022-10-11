@@ -3,14 +3,16 @@ Write-Host -Object ''
 
 # Make sure we're using the Master branch and that it's not a pull request
 # Environmental Variables Guide: https://www.appveyor.com/docs/environment-variables/
-If ($env:APPVEYOR_REPO_BRANCH -ne 'master') {
+if ($env:APPVEYOR_REPO_BRANCH -ne 'master') {
     Write-Warning -Message "Skipping version increment and publish for branch $env:APPVEYOR_REPO_BRANCH"
-} ElseIf ($env:APPVEYOR_PULL_REQUEST_NUMBER -gt 0) {
+}
+elseif ($env:APPVEYOR_PULL_REQUEST_NUMBER -gt 0) {
     Write-Warning -Message "Skipping version increment and publish for pull request #$env:APPVEYOR_PULL_REQUEST_NUMBER"
-} Else {
+}
+else {
     # We're going to add 1 to the revision value since a new commit has been merged to Master
     # This means that the major / minor / build values will be consistent across GitHub and the Gallery
-    Try {
+    try {
         # This is where the module manifest lives
         $manifestPath = '.\ApplicationControl\ApplicationControl.psd1'
 
@@ -46,9 +48,9 @@ If ($env:APPVEYOR_REPO_BRANCH -ne 'master') {
         git push origin master
         Write-Host "ApplicationControl PowerShell Module version $newVersion published to GitHub." -ForegroundColor Cyan
     }
-    Catch {
+    catch {
         # Sad panda; it broke
         Write-Warning "Publishing update $newVersion to GitHub failed."
-        Throw $_
+        throw $_
     }
 }

@@ -12,10 +12,10 @@ Install-Module -Name PSScriptAnalyzer -Force
 Install-Module -Name posh-git -Force
 
 # Import the ApplicationControl module
-If (Test-Path 'env:APPVEYOR_BUILD_FOLDER') {
-    $ProjectRoot = $env:APPVEYOR_BUILD_FOLDER
+if (Test-Path 'env:GITHUB_WORKSPACE') {
+    $ProjectRoot = $env:GITHUB_WORKSPACE
 }
-Else {
+else {
     # Local Testing 
     $ProjectRoot = "$(Split-Path -Parent -Path $MyInvocation.MyCommand.Definition)\..\"
 }
