@@ -1,7 +1,7 @@
 # Requires -RunAsAdministrator
 <#
     .SYNOPSIS
-        Sample commands for creating white listing for Ivanti Application Control.
+        Sample commands for creating allow listing for Ivanti Application Control.
 #>
 
 if (Get-Module ApplicationControl) { Remove-Module ApplicationControl }
@@ -28,11 +28,11 @@ $Files = @()
 foreach ($Folder in $Path) {
     # Get all executables in the target folder/s and available metadata
     $AppFiles = Get-AcFileMetadata -Verbose -Path $Folder
-    
+
     # Split into two arrays - file with and without metadata
     $NoMetadata = $AppFiles | Where-Object { (Test-AcMetadata $_) -eq $False }
     $Metadata = $AppFiles | Where-Object { Test-AcMetadata $_ }
-    
+
     # Update path strings in no metadata replace specific strings, version numbers etc.
     $NoMetadata | ForEach-Object { $_.Path = $_.Path -replace "<server>", "*" }
     $NoMetadata | ForEach-Object { $_.Path = $_.Path -replace $Version, "*" }

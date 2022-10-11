@@ -1,6 +1,6 @@
 <#
     .SYNOPSIS
-        Sample commands for creating white listing for Microsoft AppLocker.
+        Sample commands for creating allow listing for Microsoft AppLocker.
         (To Do - add ApplicationControl functions to manage AppLocker cmdlet outputs)
 #>
 

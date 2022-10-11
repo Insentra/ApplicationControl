@@ -12,7 +12,7 @@
 RootModule = 'ApplicationControl.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.0.0.15'
+ModuleVersion = '1.0.0.16'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -24,13 +24,13 @@ GUID = '7d896252-14ea-45a1-87e0-99d6aada4348'
 Author = 'Aaron Parker'
 
 # Company or vendor of this module
-CompanyName = 'Insentra Pty Ltd'
+CompanyName = 'Insentra Group'
 
 # Copyright statement for this module
-Copyright = '(c) 2018 Insentra Pty Ltd. All rights reserved.'
+Copyright = '(c) 2022 Insentra Group. All rights reserved.'
 
 # Description of the functionality provided by this module
-Description = 'This is a community project that is used to retreive application file metadata for creating application control / white listing rules.'
+Description = 'This is a community project that is used to retrieve application file metadata for creating application control / allow listing rules.'
 
 # Minimum version of the Windows PowerShell engine required by this module
 PowerShellVersion = '3.0'
@@ -69,9 +69,9 @@ PowerShellVersion = '3.0'
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = @('ConvertTo-AcEnvironmentPath', 'ConvertTo-AcRegExPath', 
-               'Export-AcDigitalSignature', 'Get-AcDigitalSignature', 
-               'Get-AcFileMetadata', 'New-AcAampConfiguration', 
+FunctionsToExport = @('ConvertTo-AcEnvironmentPath', 'ConvertTo-AcRegExPath',
+               'Export-AcDigitalSignature', 'Get-AcDigitalSignature',
+               'Get-AcFileMetadata', 'New-AcAampConfiguration',
                'Select-AcUniqueMetadata', 'Test-AcMetadata')
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
@@ -119,7 +119,7 @@ PrivateData = @{
         # ExternalModuleDependencies = ''
 
     } # End of PSData hashtable
-    
+
 } # End of PrivateData hashtable
 
 # HelpInfo URI of this module

@@ -1,8 +1,8 @@
-Function Get-AcFileMetadata {
+function Get-AcFileMetadata {
     <#
         .SYNOPSIS
             Get file metadata from files in a target folder.
-        
+
         .DESCRIPTION
             Retreives file metadata from files in a target path, or file paths, to display information on the target files.
             Useful for understanding application files and identifying metadata stored in them. Enables the administrator to view metadata for application control scenarios.
@@ -10,7 +10,7 @@ Function Get-AcFileMetadata {
         .NOTES
             Author: Aaron Parker
             Twitter: @stealthpuppy
-        
+
         .LINK
             https://github.com/Insentra/ApplicationControl
 
@@ -49,7 +49,7 @@ Function Get-AcFileMetadata {
         # RegEx to grab CN from certificates
         $FindCN = "(?:.*CN=)(.*?)(?:,\ O.*)"
 
-        Write-Verbose "Beginning metadata trawling."
+        Write-Verbose -Message "Beginning metadata trawling."
         $Files = @()
     }
     process {
@@ -59,12 +59,12 @@ Function Get-AcFileMetadata {
                 # Get the item to determine whether it's a file or folder
                 if ((Get-Item -Path $Loc).PSIsContainer) {
                     # Target is a folder, so trawl the folder for .exe and .dll files in the target and sub-folders
-                    Write-Verbose "Getting metadata for files in folder: $Loc"
+                    Write-Verbose -Message "Getting metadata for files in folder: $Loc"
                     $items = Get-ChildItem -Path $Loc -Recurse -Include $Include
                 }
                 else {
                     # Target is a file, so just get metadata for the file
-                    Write-Verbose "Getting metadata for file: $Loc"
+                    Write-Verbose -Message "Getting metadata for file: $Loc"
                     $items = Get-Item -Path $Loc
                 }
 
@@ -87,7 +87,7 @@ Function Get-AcFileMetadata {
 
         # Return the array of file paths and metadata
         $StopWatch.Stop()
-        Write-Verbose "Metadata trawling complete. Script took $($StopWatch.Elapsed.TotalMilliseconds) ms to complete."
+        Write-Verbose -Message "Metadata trawling complete. Script took $($StopWatch.Elapsed.TotalMilliseconds) ms to complete."
         return $Files | Sort-Object -Property Path
     }
 }

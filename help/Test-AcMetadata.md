@@ -35,7 +35,7 @@ $Metadata = $Files | Where-Object { Test-AcMetadata $_ }
 ```
 
 Description:
-Filters the items in $Files that do have metadata that we can use for white listing.
+Filters the items in $Files that do have metadata that we can use for allow listing.
 
 ## PARAMETERS
 

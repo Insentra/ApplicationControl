@@ -1,54 +1,54 @@
-Function New-AcAampConfiguration {
+function New-AcAampConfiguration {
     <#
         .SYNOPSIS
           Creates an Ivanti Application Control configuration from an array of inputs.
-            
+
         .DESCRIPTION
           Works with Get-DigitalSignatures and Get-FileMetadata to create an Ivanti Application Control configuration.
           Intended for making it easier to define an application and create a rule set automatically for copying into a detailed configuration.
-  
+
           Adds Accessible files and Accessible folders with metadata and Trusted Vendor certificates to the Everyone group rule.
-  
+
         .NOTES
           Author: Aaron Parker
           Twitter: @stealthpuppy
-  
+
         .LINK
           https://github.com/Insentra/ApplicationControl
-  
+
         .OUTPUTS
           [System.String]
-  
+
         .PARAMETER AccessibleFiles
             An array of files with metadata to add to the Allowed list.
 
         .PARAMETER TrustedVendors
             An array of signed files for extracting the certificate to add to the Trusted Vendors list.
-        
+
         .PARAMETER GroupRule
             The Group rule to add the AccessibleFiles and TrustedVendors to. Defaults to Everyone.
 
         .PARAMETER Path
             A full file path to output the temporary Application Control configuration to. Defaults to C:\Temp\Configuration.aamp
-        
+
         .PARAMETER IgnoreCRL
             Enable or disable ignore CRL flags for Trusted Vendor certificates. Typically CRL checking is an issue behind a proxy server.
-  
+
         .EXAMPLE
           New-AampConfiguration -AccessibleFiles $Files -Path "C:\Temp\Configuration.aamp"
-  
+
           Description:
           Adds files and metadata in the array $Files to a new Application Control configuration at "C:\Temp\Configuration.aamp".
 
         .EXAMPLE
           New-AampConfiguration -AccessibleFiles $Files -RegEx
-  
+
           Description:
           Adds files and metadata in the array $Files to a new Application Control configuration at the default path of "C:\Temp\Configuration.aamp". With file paths treated as RegEx.
 
         .EXAMPLE
           New-AampConfiguration -TrustedVendors $SignedFiles -Path "C:\Temp\Configuration.aamp"
-  
+
           Description:
           Adds Trusted Vendor certificates from the files in the array $SignedFiles to a new Application Control configuration at "C:\Temp\Configuration.aamp".
     #>
@@ -75,17 +75,17 @@ Function New-AcAampConfiguration {
                 HelpMessage = 'Enable or disable ignore CRL flags for Trusted Vendor certificates.')]
         [System.Boolean]$IgnoreCRL = $True
     )
-    begin {  
+    begin {
         # Create the configuration; Create the configuration helper
         try {
-            Write-Verbose "Loading object 'AM.Configuration.5'."
+            Write-Verbose -Message "Loading object 'AM.Configuration.5'."
             $Configuration = New-Object -ComObject 'AM.Configuration.5' -ErrorAction SilentlyContinue
         }
         catch {
             throw "Unable to load COM Object 'AM.Configuration.5'"
         }
         try {
-            Write-Verbose "Loading object 'AM.ConfigurationHelper.1'."
+            Write-Verbose -Message "Loading object 'AM.ConfigurationHelper.1'."
             $ConfigurationHelper = New-Object -ComObject 'AM.ConfigurationHelper.1' -ErrorAction SilentlyContinue
         }
         catch {
@@ -94,21 +94,21 @@ Function New-AcAampConfiguration {
 
         # Create configuration objects
         if ($PSBoundParameters.ContainsKey('AccessibleFiles')) {
-            Write-Verbose "Creating AM.File instance"
+            Write-Verbose -Message "Creating AM.File instance"
             $AccessibleFile = $Configuration.CreateInstanceFromClassName("AM.File")
         }
         if ($PSBoundParameters.ContainsKey('TrustedVendors')) {
-            Write-Verbose "Creating AM.DigitalCertificate instance"
+            Write-Verbose -Message "Creating AM.DigitalCertificate instance"
             $DigitalCertificate = $Configuration.CreateInstanceFromClassName("AM.DigitalCertificate")
         }
 
         # Create default configuration
-        Write-Verbose "Creating Application Control default configuration"
+        Write-Verbose -Message "Creating Application Control default configuration"
         $ConfigurationXml = $ConfigurationHelper.DefaultConfiguration
         $Configuration.ParseXML($ConfigurationXml)
 
         # Remove the default folders from the configuration to make viewing the config simpler
-        Write-Verbose "Removing default folders from the configuration in rule $GroupRule."
+        Write-Verbose -Message "Removing default folders from the configuration in rule $GroupRule."
         foreach ($folder in $Configuration.GroupRules.Item($GroupRule).AccessibleFolders) {
             $Configuration.GroupRules.Item($GroupRule).AccessibleFolders.Remove($folder.Path) | Out-Null
         }
@@ -121,7 +121,7 @@ Function New-AcAampConfiguration {
             foreach ($file in $AccessibleFiles) {
                 # Add a file to the list of accessible files.
                 # Requires running from an elevated PowerShell instance because the AM objects fail adding all values without admin rights
-                Write-Verbose "[Adding Accessible File] $($file.Path)"
+                Write-Verbose -Message "[Adding Accessible File] $($file.Path)"
                 if ($file.Path -match "\\.\*\\") {
                     # String matches a RegEx path that includes "\\.*\\ denoting any folder"
                     $AccessibleFile.Path = $file.Path
@@ -186,10 +186,10 @@ Function New-AcAampConfiguration {
         if ($PSBoundParameters.ContainsKey('TrustedVendors')) {
             foreach ($File in $TrustedVendors) {
                 # Adding Trusted Vendors
-                Write-Verbose "[Adding Trusted Vendor]"
+                Write-Verbose -Message "[Adding Trusted Vendor]"
                 # Use the helper object to read the certificate and expiry date from the signed file
                 [ref]$dtMyDate = New-Object System.Object
-                Write-Verbose "Reading certificate from $($File.Path)"
+                Write-Verbose -Message "Reading certificate from $($File.Path)"
                 $CertificateData = $ConfigurationHelper.ReadCertificateDateFromFile($File.Path, 0, $dtMyDate)
 
                 # Get details from the certificate for Issuer and Subject
@@ -198,9 +198,9 @@ Function New-AcAampConfiguration {
                 $CertObj.Import($File.Path)
 
                 # Build Trusted Vendor certificate; Add the certificate information to the configuration
-                Write-Verbose "Certificate: $($CertObj.Subject); $($dtMyDate.Value.ToShortDateString()) $($dtMyDate.Value.ToShortTimeString())"
+                Write-Verbose -Message "Certificate: $($CertObj.Subject); $($dtMyDate.Value.ToShortDateString()) $($dtMyDate.Value.ToShortTimeString())"
                 $DigitalCertificate.RawCertificateData = $CertificateData
-                Write-Verbose "Issuer: $($CertObj.Issuer)"
+                Write-Verbose -Message "Issuer: $($CertObj.Issuer)"
                 $DigitalCertificate.Description = "Issuer: $($CertObj.Issuer -replace $FindCN, '$1'). Thumbprint: $($CertObj.Thumbprint)"
                 $DigitalCertificate.IssuedTo = ($CertObj.Subject -replace $FindCN, '$1') -replace '"', ""
                 $DigitalCertificate.ExpiryDate = "$($dtMyDate.Value.ToShortDateString()) $($dtMyDate.Value.ToShortTimeString())"
@@ -220,7 +220,7 @@ Function New-AcAampConfiguration {
                 New-Item -Path (Split-Path -Path $Path -Parent) -ItemType Directory | Out-Null
             }
         }
-        Write-Verbose "Saving configuration to: $Path"
+        Write-Verbose -Message "Saving configuration to: $Path"
         $ConfigurationHelper.SaveLocalConfiguration($Path, $Configuration.Xml())
         $Path
     }

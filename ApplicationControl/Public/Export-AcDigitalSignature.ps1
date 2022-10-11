@@ -1,15 +1,15 @@
-Function Export-AcDigitalSignature {
+function Export-AcDigitalSignature {
     <#
         .SYNOPSIS
             Exports a digital signature certificate from a signed file.
-        
+
         .DESCRIPTION
             Exports a digital signature certificate from a signed file to a specified folder.
 
         .NOTES
             Author: Aaron Parker
             Twitter: @stealthpuppy
-        
+
         .LINK
             https://github.com/Insentra/ApplicationControl
 
@@ -47,7 +47,7 @@ Function Export-AcDigitalSignature {
         [System.String]$Destination
     )
     begin {
-        Write-Verbose "Importing module PKI."
+        Write-Verbose -Message "Importing module PKI."
         if (Get-Module -ListAvailable PKI -ErrorAction SilentlyContinue) {
             try {
                 Import-Module -Name PKI -ErrorAction SilentlyContinue
@@ -63,14 +63,14 @@ Function Export-AcDigitalSignature {
     }
     process {
         # Output the a P7b certificate file for each unique certificate found from files in the folder
-        Write-Verbose "Exporting certificate P7B files to $Export."
+        Write-Verbose -Message "Exporting certificate P7B files to $Export."
         foreach ( $File in $Path ) {
-            Write-Verbose "Getting certificate from $File."
+            Write-Verbose -Message "Getting certificate from $File."
             $cert = (Get-AuthenticodeSignature $File).SignerCertificate
-            Write-Verbose "Exporting certificate: $Destination\$($cert.Thumbprint).p7b"
+            Write-Verbose -Message "Exporting certificate: $Destination\$($cert.Thumbprint).p7b"
             Export-Certificate -Cert $cert -FilePath "$Destination\$($cert.Thumbprint).p7b" -Type P7B | Out-Null
             $Output += "$Destination\$($cert.Thumbprint).p7b"
-        } 
+        }
     }
     end {
         $Output

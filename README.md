@@ -1,6 +1,6 @@
 # Application Control
 
-A module for retrieving application information for application control and white listing purposes with tools such as Ivanti Application Manager and Microsoft AppLocker.
+A module for retrieving application information for application control and allow listing purposes with tools such as Ivanti Application Manager and Microsoft AppLocker.
 
 ## Module
 
@@ -35,7 +35,7 @@ Import-Module C:\Temp\ApplicationControl
 
 ### Ivanti Application Control
 
-Here is an example using the module to create an Ivanti Application Control configuration for Microsoft Teams. This application uses the [Electron](https://electronjs.org/) framework and [Squirell](https://electronjs.org/docs/api/auto-updater) for in process updates, making white listing a challenge because the application installs and updates in the user profile and in the user context. This example trawls the application folders and find unique metadata to turn into an Ivanti Application Control configuration using RegEx paths to simplify the configuration as much as possible.
+Here is an example using the module to create an Ivanti Application Control configuration for Microsoft Teams. This application uses the [Electron](https://electronjs.org/) framework and [Squirell](https://electronjs.org/docs/api/auto-updater) for in process updates, making allow listing a challenge because the application installs and updates in the user profile and in the user context. This example trawls the application folders and find unique metadata to turn into an Ivanti Application Control configuration using RegEx paths to simplify the configuration as much as possible.
 
 ```powershell
 Import-Module ApplicationControl -Force

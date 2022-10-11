@@ -1,8 +1,8 @@
-Function Get-AcDigitalSignature {
+function Get-AcDigitalSignature {
     <#
         .SYNOPSIS
             Get digital signatures from files in a target folder.
-        
+
         .DESCRIPTION
             Gets digital signatures from .exe and .dll files from a specified path and sub-folders.
             Retreives the certificate thumbprint, certificate name, certificate expiry, certificate validity and file path and outputs the results.
@@ -11,7 +11,7 @@ Function Get-AcDigitalSignature {
         .NOTES
             Author: Aaron Parker
             Twitter: @stealthpuppy
-        
+
         .LINK
             https://github.com/Insentra/ApplicationControl
 
@@ -58,7 +58,7 @@ Function Get-AcDigitalSignature {
     begin {
         # Measure time taken to gather data
         $StopWatch = [system.diagnostics.stopwatch]::StartNew()
-        
+
         # Initialise $Signatures as an array
         $Signatures = @()
     }
@@ -71,18 +71,18 @@ Function Get-AcDigitalSignature {
                 if ((Get-Item -Path $Loc -Force).PSIsContainer) {
 
                     # Target is a folder, so trawl the folder for .exe and .dll files in the target and sub-folders
-                    Write-Verbose "Scanning files in folder: $Loc"
+                    Write-Verbose -Message "Scanning files in folder: $Loc"
                     $items = Get-ChildItem -Path $Loc -Recurse -File -Include $Include
                 }
                 else {
 
                     # Target is a file, so just get metadata for the file
-                    Write-Verbose "Scanning file: $Loc"
+                    Write-Verbose -Message "Scanning file: $Loc"
                     $items = Get-Item -Path $Loc
                 }
 
                 # Get Exe and Dll files from the target path (inc. subfolders), find signatures and return certain properties in a grid view
-                Write-Verbose "Getting digital signatures for: $Loc"
+                Write-Verbose -Message "Getting digital signatures for: $Loc"
                 $Signatures += $items | Get-AuthenticodeSignature | `
                     Select-Object @{Name = "Thumbprint"; Expression = { $_.SignerCertificate.Thumbprint } }, `
                 @{Name = "Subject"; Expression = { $_.SignerCertificate.Subject } }, `
@@ -98,17 +98,17 @@ Function Get-AcDigitalSignature {
     end {
         # If -Unique is specified, filter the signatures list and return the first item of each unique certificate
         # If -Export is specified, we also only want unique certificate files
-        if ($Export -or $Unique) { 
-            Write-Verbose "Filtering for unique signatures."
+        if ($Export -or $Unique) {
+            Write-Verbose -Message "Filtering for unique signatures."
             $Signatures = $Signatures | Where-Object { $_.Status -eq "Valid" -or $_.Status -eq "UnknownError" } | `
                 Group-Object -Property Thumbprint | `
                 ForEach-Object { $_.Group | Select-Object -First 1 }
-            Write-Verbose "$($Signatures.Count) unique signature/s found in $Path"
+            Write-Verbose -Message "$($Signatures.Count) unique signature/s found in $Path"
         }
 
         # Return output
         $StopWatch.Stop()
-        Write-Verbose "Digital signature trawling complete. Script took $($StopWatch.Elapsed.TotalMilliseconds) ms to complete."
+        Write-Verbose -Message "Digital signature trawling complete. Script took $($StopWatch.Elapsed.TotalMilliseconds) ms to complete."
         $Signatures | Sort-Object -Property Thumbprint, Path
     }
 }

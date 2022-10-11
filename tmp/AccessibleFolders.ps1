@@ -1,11 +1,11 @@
-        $AccessibleFolder = $Configuration.CreateInstanceFromClassName("AM.Folder")
+$AccessibleFolder = $Configuration.CreateInstanceFromClassName("AM.Folder")
 
-                # Disabled until adding multiple folders with the same path can be fixed
-        <#if ($PSBoundParameters.ContainsKey('AccessibleFolders')) {
+# Disabled until adding multiple folders with the same path can be fixed
+<#if ($PSBoundParameters.ContainsKey('AccessibleFolders')) {
             foreach ($file in $AccessibleFolders) {
                 # Add a file to the list of accessible files.
                 $FolderPath = Split-Path -Path $file.Path -Parent
-                Write-Verbose "[Adding Accessible Folder] $(ConvertTo-EnvironmentPath -Path $FolderPath)"
+                Write-Verbose -Message "[Adding Accessible Folder] $(ConvertTo-EnvironmentPath -Path $FolderPath)"
                 $AccessibleFolder.ItemKey = $(ConvertTo-EnvironmentPath -Path $FolderPath)
                 $AccessibleFolder.Path = $(ConvertTo-EnvironmentPath -Path $FolderPath)
                 if ($RegEx) { $AccessibleFolder.UseRegularExpression -eq $True}
@@ -41,11 +41,11 @@
                 }
                 else {
                     $AccessibleFolder.Metadata.FileDescriptionEnabled = $False
-                } 
+                }
                 if (!($AccessibleFolder.Description)) {
                     $AccessibleFolder.Description = "[No metadata found]"
                 }
-                
+
                 # Add folder to the rule and remove values from all properties ready for next file
                 $Configuration.GroupRules.Item($GroupRule).AccessibleFolders.Add($AccessibleFolder.Xml()) | Out-Null
                 $AccessibleFolder.Path = ""

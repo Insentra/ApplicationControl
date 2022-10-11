@@ -1,4 +1,4 @@
-Function Test-AcNoMetadata {
+function Test-AcNoMetadata {
     <#
         .SYNOPSIS
             Returns True|False if all specified properties have no metadata
@@ -8,11 +8,14 @@ Function Test-AcNoMetadata {
     [OutputType([System.Array])]
     param (
         [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline = $True, ValueFromPipelineByPropertyName = $False)]
-        [object]$obj
+        [System.Object]$Object
     )
-    foreach ($Property in 'Vendor', 'Company', 'Product', 'Description') {
-        Write-Verbose "Testing $($obj.Path)"
-        if ($obj.$Property -notin @($Null, "", " ")) { Return $False }
+
+    process {
+        foreach ($Property in 'Vendor', 'Company', 'Product', 'Description') {
+            Write-Verbose -Message "Testing $($Object.Path)"
+            if ($Object.$Property -notin @($Null, "", " ")) { Return $False }
+        }
+        return $True
     }
-    Return $True
 }

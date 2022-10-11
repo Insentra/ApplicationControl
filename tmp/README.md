@@ -1,6 +1,6 @@
 # Application Control
 
-A module for retrieving application information for application control and white listing purposes with tools such as Ivanti Application Manager and Microsoft AppLocker.
+A module for retrieving application information for application control and allow listing purposes with tools such as Ivanti Application Manager and Microsoft AppLocker.
 
 ## Module
 
@@ -85,4 +85,4 @@ Open the temporary configuration and copy and paste into your working config.
 ## To Do
 
 * Update New-AcAampConfiguration to create folder rules with Vendor (or trust code-signing certificates for folders with signed executables)
-* Enable sorting of file paths to determine common metadata so that white listing rules can be simplified
+* Enable sorting of file paths to determine common metadata so that allow listing rules can be simplified

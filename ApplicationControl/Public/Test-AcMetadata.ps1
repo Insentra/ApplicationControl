@@ -1,4 +1,4 @@
-Function Test-AcMetadata {
+function Test-AcMetadata {
     <#
         .SYNOPSIS
             Returns True|False if all specified properties does or doesn't have metadata
@@ -11,19 +11,19 @@ Function Test-AcMetadata {
         .NOTES
             Author: Aaron Parker
             Twitter: @stealthpuppy
-  
+
         .LINK
             https://github.com/Insentra/ApplicationControl
-  
+
         .OUTPUTS
             Boolean
-  
+
         .PARAMETER FileList
             An array of files with metadata returned from Get-AcFileMetadata
-  
+
         .EXAMPLE
             $NoMetadata = $Files | Where-Object { (Test-AcMetadata $_) -eq $False }
-    
+
             Description:
             Filters the items in $Files that do not have any metadata.
 
@@ -31,17 +31,21 @@ Function Test-AcMetadata {
             $Metadata = $Files | Where-Object { Test-AcMetadata $_ }
 
             Description:
-            Filters the items in $Files that do have metadata that we can use for white listing.
+            Filters the items in $Files that do have metadata that we can use for allow listing.
     #>
     [CmdletBinding(SupportsShouldProcess = $False)]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseSingularNouns", "Metadata is a singular noun")]
     [OutputType([Bool])]
     param (
         [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline = $True, ValueFromPipelineByPropertyName = $False)]
-        [object]$obj
+        [System.Object]$Object
     )
-    foreach ($Property in 'Vendor', 'Company', 'Product', 'Description') {
-        Write-Verbose "Testing $($obj.Path)"
-        if ($obj.$Property -ge 2) { Return $True }
+
+    process {
+        foreach ($Property in 'Vendor', 'Company', 'Product', 'Description') {
+            Write-Verbose -Message "Testing $($Object.Path)"
+            if ($Object.$Property -ge 2) { return $True }
+        }
+        return $False
     }
-    return $False
 }
