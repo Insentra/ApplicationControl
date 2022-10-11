@@ -34,7 +34,7 @@ function Test-AcMetadata {
             Filters the items in $Files that do have metadata that we can use for allow listing.
     #>
     [CmdletBinding(SupportsShouldProcess = $False)]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseSingularNouns", "Metadata is a singular noun")]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseSingularNouns", "", Justification="Metadata is a singular noun")]
     [OutputType([Bool])]
     param (
         [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline = $True, ValueFromPipelineByPropertyName = $False)]
